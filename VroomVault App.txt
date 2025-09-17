@@ -1,0 +1,25 @@
+VroomVault App 
+
+Main menu
+- login/signup
+- list of cars in inventory with link to that car
+  - image of that car 
+- possible general data
+  - 
+  
+Data for each car's page
+- make, model, year
+- vin, licencse plate number
+- registration date
+- saftey date
+- last time taken to shop 
+  - description of services
+- last oil change
+- filter changes - cabin, air intake, etc
+- notes on issues
+
+Settings page
+- Notifications - email sent to remind of upcoming dates
+  - options for number of days in advance
+  - 
+
