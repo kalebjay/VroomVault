@@ -35,12 +35,25 @@ class MaintenanceRecord(Base):
     id = Column(Integer, primary_key=True, index=True)
     date = Column(DateTime, default=datetime.now(timezone.utc))
     mileage = Column(Integer)
-    description = Column(String)
     cost = Column(Float)
-    
+    description = Column(String)
     vehicle_id = Column(Integer, ForeignKey("vehicles.id"))
     vehicle = relationship("DbVehicle", back_populates="maint_records")
+    # --- Inheritance settings ---
+    type = Column(String(50))
+    __mapper_args__ = {
+        "polymorphic_identity": "maintenance_record",
+        "polymorphic_on": type,
+    }
 
+class OilChangeRecord(MaintenanceRecord):
+    __tablename__ = "oil_change_records"
+    id = Column(Integer, ForeignKey("maintenance_records.id"), primary_key=True)
+    oil_type = Column(String)
+    filter_part_number = Column(String)
+    __mapper_args__ = {
+        "polymorphic_identity": "oil_change",
+    }
 
 
 
