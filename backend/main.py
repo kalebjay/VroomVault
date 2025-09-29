@@ -9,15 +9,15 @@ from router import user, authentication, maintenance
 
 app = FastAPI()
 app.include_router(authentication.router)
-#app.include_router(comment.router)
+#app.include_router(vehicle.router)
 app.include_router(user.router)
 app.include_router(maintenance.router)
 #app.include_router(post.router)
 
 
-@app.get("/")
-def root():
-     return "Yo sup foo"
+#@app.get("/")
+#def root():
+#    return "Yo sup foo"
 
 
 origins = ['http://localhost:5173']
