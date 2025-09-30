@@ -22,9 +22,9 @@ class DbVehicle(Base):
     year = Column(Integer)
     vin = Column(String)
     license_plate = Column(String)
-    exp_registration = Column(DateTime, default=datetime.now(timezone.utc))
-    exp_safety = Column(DateTime, default=datetime.now(timezone.utc))
-    last_oil = Column(DateTime, default=datetime.now(timezone.utc))
+    exp_registration = Column(DateTime(timezone=True), default=datetime.now)
+    exp_safety = Column(DateTime(timezone=True), default=datetime.now)
+    last_oil = Column(DateTime(timezone=True), default=datetime.now)
 
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("DbUser", back_populates="vehicles")
@@ -33,7 +33,7 @@ class DbVehicle(Base):
 class MaintenanceRecord(Base):
     __tablename__ = "maintenance_records"
     id = Column(Integer, primary_key=True, index=True)
-    date = Column(DateTime, default=datetime.now(timezone.utc))
+    date = Column(DateTime(timezone=True), default=datetime.now)
     mileage = Column(Integer)
     cost = Column(Float)
     description = Column(String)
@@ -54,21 +54,3 @@ class OilChangeRecord(MaintenanceRecord):
     __mapper_args__ = {
         "polymorphic_identity": "oil_change",
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
