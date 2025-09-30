@@ -11,6 +11,8 @@ router = APIRouter(
     tags=['maintenance']
 )
 
+# get all maintenance records for one vehicle (using vehicle id)
+
 @router.post('/{vehicle_id}', response_model=AnyMaintenanceRecordDisplay)
 def create_maintenance_record(
         vehicle_id: int,

@@ -4,12 +4,12 @@ from fastapi.staticfiles import StaticFiles
 from db import models
 from db.database import engine
 from router import user, authentication
-from router import user, authentication, maintenance
+from router import user, authentication, maintenance, vehicle
 
 
 app = FastAPI()
 app.include_router(authentication.router)
-#app.include_router(vehicle.router)
+app.include_router(vehicle.router)
 app.include_router(user.router)
 app.include_router(maintenance.router)
 #app.include_router(post.router)
