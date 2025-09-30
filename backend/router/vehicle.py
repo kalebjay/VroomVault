@@ -12,6 +12,10 @@ router = APIRouter(
     tags=['vehicle']
 )
 
+# get a vehicle based on id
+
+# get all vehicles per user
+
 @router.post('', response_model=VehicleDisplay)
 def createVehicle(request: VehicleBase,
                   db: Session = Depends(get_db),
@@ -22,7 +26,7 @@ def createVehicle(request: VehicleBase,
 
     return create_vehicle(db, request, current_user)
 
-
+# delete a vehicle
 
 
 
