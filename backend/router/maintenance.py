@@ -14,11 +14,10 @@ router = APIRouter(
 # get all maintenance records for one vehicle (using vehicle id)
 
 @router.post('/{vehicle_id}', response_model=AnyMaintenanceRecordDisplay)
-def create_maintenance_record(
-        vehicle_id: int,
-        request: AnyMaintenanceRecordCreate,
-        db: Session = Depends(get_db),
-        current_user: UserAuth = Depends(get_current_user)
+def create_maintenance_record(vehicle_id: int,
+                              request: AnyMaintenanceRecordCreate,
+                              db: Session = Depends(get_db),
+                              current_user: UserAuth = Depends(get_current_user)
     ):
     # Find the vehicle and ensure it belongs to the current user
     vehicle = db.query(models.DbVehicle).filter(models.DbVehicle.id == vehicle_id).first()
