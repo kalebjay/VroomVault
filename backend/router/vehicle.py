@@ -12,6 +12,16 @@ router = APIRouter(
     tags=['vehicle']
 )
 
+@router.post('', response_model=VehicleDisplay)
+def createVehicle(request: VehicleBase,
+                  db: Session = Depends(get_db),
+                  current_user: UserAuth = Depends(get_current_user)
+    ):
+    if not current_user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
+
+    return create_vehicle(db, request, current_user)
+
 # get a vehicle based on id
 @router.get('/{id}')
 def getVehicle(id: int, db: Session = Depends(get_db)):
@@ -22,24 +32,14 @@ def getVehicle(id: int, db: Session = Depends(get_db)):
 def getUserVehicles(db: Session = Depends(get_db),
                    current_user: UserAuth = Depends(get_current_user)
     ):
-    get_all_vehicles_per_user(db)
+    return get_all_vehicles_per_user(db, current_user)
    
-
-# update a vehicle)
     
 
-    
+# update vehicle  
 
 
-@router.post('', response_model=VehicleDisplay)
-def createVehicle(request: VehicleBase,
-                  db: Session = Depends(get_db),
-                  current_user: UserAuth = Depends(get_current_user)
-    ):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
 
-    return create_vehicle(db, request, current_user)
 
 # delete a vehicle
 
