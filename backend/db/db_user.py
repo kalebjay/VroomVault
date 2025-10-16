@@ -17,13 +17,24 @@ def create_user(db: Session, request: UserBase):
     
     return new_user
 
-def get_user_by_username(db: Session, username: str):
-    user = db.query(DbUser).filter(DbUser.username == username).first()
+def get_user_by_id(db: Session, id: int):
+    user = db.query(DbUser).filter(DbUser.id == id).first()
     c404 = status.HTTP_404_NOT_FOUND
-    detail_str = f'User with username {username} not found'
-    
+    detail_str = f'User with id {id} not found'
     if not user:
         raise HTTPException(status_code=c404, detail=detail_str)
     
     return user
+
+def get_user_by_username(db: Session, username: str):
+    user = db.query(DbUser).filter(DbUser.username == username).first()
+    c404 = status.HTTP_404_NOT_FOUND
+    detail_str = f'User with username {username} not found'
+    if not user:
+        raise HTTPException(status_code=c404, detail=detail_str)
+    
+    return user
+
+def get_all_users(db: Session):
+    return db.query(DbUser).all()
 

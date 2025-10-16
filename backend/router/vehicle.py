@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from db.database import get_db
-from db.db_vehicle import create_vehicle
+from db.db_vehicle import create_vehicle, get_vehicle_by_id, get_all_vehicles_per_user
 from router.schemas import VehicleBase, VehicleDisplay
 from auth.oauth2 import get_current_user
 from router.schemas import UserAuth
@@ -13,8 +13,23 @@ router = APIRouter(
 )
 
 # get a vehicle based on id
+@router.get('/{id}')
+def getVehicle(id: int, db: Session = Depends(get_db)):
+    return get_vehicle_by_id(db, id)
 
 # get all vehicles per user
+@router.get('', response_model=list[VehicleDisplay])
+def getUserVehicles(db: Session = Depends(get_db),
+                   current_user: UserAuth = Depends(get_current_user)
+    ):
+    get_all_vehicles_per_user(db)
+   
+
+# update a vehicle)
+    
+
+    
+
 
 @router.post('', response_model=VehicleDisplay)
 def createVehicle(request: VehicleBase,
