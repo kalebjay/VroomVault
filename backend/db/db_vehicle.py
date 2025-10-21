@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from .models import DbUser, DbVehicle
-from router.schemas import VehicleBase
+from router.schemas import VehicleBase, UserAuth
 from utils.exceptions import not_found_exception
 from sqlalchemy.orm import Session
 
