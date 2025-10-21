@@ -29,12 +29,6 @@ def get_vehicle_by_id(db: Session, id: int):
 # get all vehicles per user
 def get_all_vehicles_per_user(db: Session, current_user: UserAuth):
     vehicles = db.query(DbVehicle).filter(DbVehicle.owner_id == current_user.id).all()
-    c404 = status.HTTP_404_NOT_FOUND
-    detail_str = f'No vehicles found for user with id {current_user.id}'
-    # It's often better to return an empty list than a 404 for a query that finds nothing.
-    # If you prefer a 404, you can uncomment the following line:
-    # if not vehicles:
-    #     raise HTTPException(status_code=c404, detail=detail_str)
     return vehicles
 
 # update vehicle
