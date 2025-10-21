@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
 from .models import DbUser, DbVehicle
 from router.schemas import VehicleBase
+from utils.exceptions import not_found_exception
 from sqlalchemy.orm import Session
 
 
@@ -21,11 +22,8 @@ def create_vehicle(db: Session, request: VehicleBase, user: DbUser):
 
 def get_vehicle_by_id(db: Session, id: int):
     vehicle = db.query(DbVehicle).filter(DbVehicle.id == id).first()
-    c404 = status.HTTP_404_NOT_FOUND
-    detail_str = f'Vehicle with id {id} not found'
     if not vehicle:
-        raise HTTPException(status_code=c404, detail=detail_str)
-    
+        raise not_found_exception("Vehicle", id)
     return vehicle
 
 # get all vehicles per user
@@ -33,14 +31,27 @@ def get_all_vehicles_per_user(db: Session, current_user: UserAuth):
     vehicles = db.query(DbVehicle).filter(DbVehicle.owner_id == current_user.id).all()
     c404 = status.HTTP_404_NOT_FOUND
     detail_str = f'No vehicles found for user with id {current_user.id}'
-    if not vehicles:
-        raise HTTPException(status_code=c404, detail=detail_str)
-
+    # It's often better to return an empty list than a 404 for a query that finds nothing.
+    # If you prefer a 404, you can uncomment the following line:
+    # if not vehicles:
+    #     raise HTTPException(status_code=c404, detail=detail_str)
     return vehicles
 
 # update vehicle
+def update_vehicle(id: int, request: VehicleBase, db: Session):
+    vehicle = db.query(DbVehicle).filter(DbVehicle.id == id).first()
+    if not vehicle:
+        raise not_found_exception("Vehicle", id)
 
+    vehicle.make = request.make
+    vehicle.model = request.model
+    vehicle.year = request.year
+    vehicle.vin = request.vin
+    vehicle.license_plate = request.license_plate
+    db.commit()
+    db.refresh(vehicle)
+    return vehicle
 
 # delete Vehicle
-
-
+def delete_vehicle():
+    pass

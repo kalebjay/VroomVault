@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from db.database import get_db
-from db.db_vehicle import create_vehicle, get_vehicle_by_id, get_all_vehicles_per_user
+from db.db_vehicle import create_vehicle, get_vehicle_by_id, get_all_vehicles_per_user, update_vehicle
 from router.schemas import VehicleBase, VehicleDisplay
 from auth.oauth2 import get_current_user
+from utils.exceptions import credentials_exception, forbidden_exception
 from router.schemas import UserAuth
 
 
@@ -18,7 +19,7 @@ def createVehicle(request: VehicleBase,
                   current_user: UserAuth = Depends(get_current_user)
     ):
     if not current_user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
+        raise credentials_exception(detail='Authentication Failed')
 
     return create_vehicle(db, request, current_user)
 
@@ -37,18 +38,21 @@ def getUserVehicles(db: Session = Depends(get_db),
     
 
 # update vehicle  
+@router.put('/{id}')
+def updateVehicle(id: int,
+                  request: VehicleBase,
+                  db: Session = Depends(get_db),
+                  current_user: UserAuth = Depends(get_current_user)
+    ):
+    vehicle = get_vehicle_by_id(db, id)
+    if vehicle.owner_id != current_user.id:
+        raise forbidden_exception(detail="Not authorized to update this vehicle")
+    return update_vehicle(id, request, db)
+    
 
 
 
 
 # delete a vehicle
-
-
-
-
-
-
-
-
-
-
+def deleteVehicle():
+    pass
