@@ -13,6 +13,7 @@ router = APIRouter(
     tags=['vehicle']
 )
 
+
 @router.post('', response_model=VehicleDisplay)
 def createVehicle(request: VehicleBase,
                   db: Session = Depends(get_db),
@@ -22,6 +23,7 @@ def createVehicle(request: VehicleBase,
         raise credentials_exception(detail='Authentication Failed')
 
     return create_vehicle(db, request, current_user)
+
 
 # get a vehicle based on id
 @router.get('/{id}')
@@ -35,7 +37,6 @@ def getUserVehicles(db: Session = Depends(get_db),
     ):
     return get_all_vehicles_per_user(db, current_user)
    
-    
 
 # update vehicle  
 @router.put('/{id}')
