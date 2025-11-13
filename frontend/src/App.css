@@ -12,9 +12,9 @@
 }
 
 .test-button {
-  background-color: #1a77a5;
+  background-color: #0ec5b3;
   color: #fff;
-  border: 2px solid #6ce557;
+  border: 2px solid #0f8de7;
   padding: 10px 20px;
   border-radius: 5px;
   margin-top: 20px;
@@ -23,7 +23,7 @@
 .login-button {
   background-color: #1a77a5;
   color: #fff;
-  border: 2px solid #6ce557;
+  border: 2px solid #5792e5;
   padding: 10px 20px;
   border-radius: 5px;
   position: absolute;
