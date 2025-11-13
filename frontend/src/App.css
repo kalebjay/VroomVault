@@ -1,9 +1,49 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
   text-align: center;
 }
+
+.main-title {
+  color: #1a77a5;
+}
+
+.test-button {
+  background-color: #1a77a5;
+  color: #fff;
+  border: 2px solid #6ce557;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+.login-button {
+  background-color: #1a77a5;
+  color: #fff;
+  border: 2px solid #6ce557;
+  padding: 10px 20px;
+  border-radius: 5px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .logo {
   height: 6em;

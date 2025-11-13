@@ -1,37 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
-// Start the frontend react app by using alias npmr
+// Start a local frontend react app 
+// on port 5173 using cmd 'npm run dev'
 // alias npmr='npm run dev'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
+    <div className="app-container">
+      <button className="login-button">New User/Login</button>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <div>
+          <h1 className="main-title">Vroom Vault</h1>
+          <h2>This is your ultimate auto hub!</h2>
+        </div>
+        <p>Track all of your vehicles and toys all in one place!</p>
+        <div>
+          <button className="test-button">Test</button>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 

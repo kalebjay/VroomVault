@@ -2,12 +2,13 @@ VroomVault App
 
 Main menu
 - login/signup
-- list of cars in inventory with link to that car
-  - image of that car 
-- possible general data
-  - 
+- image of a car 
+- Welcome 
+- general data
+- test data/login
+
   
-Data for each car's page
+Data for each user's car/s page
 - make, model, year
 - vin, licencse plate number
 - registration date
