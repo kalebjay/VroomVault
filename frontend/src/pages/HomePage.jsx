@@ -1,13 +1,17 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import styles from './HomePage.module.css';
 
 function HomePage() {
   return (
     <>
+      <Link to="/login" className={styles.loginButton}>New User/Login</Link>
       <div>
-        <h1 className="main-title">Vroom Vault</h1>
+        <h1 className={styles.title}>Vroom Vault</h1>
         <h2>This is your ultimate auto hub!</h2>
       </div>
       <p>Track all of your vehicles and toys all in one place!</p>
-      <button className="test-button">Test</button>
+      <Link to="/test" className={styles.testButton}>Test</Link>
     </>
   );
 }
