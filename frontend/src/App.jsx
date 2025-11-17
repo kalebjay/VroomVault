@@ -1,4 +1,7 @@
-import './App.css'
+import './App.css';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
 
 // Start a local frontend react app 
 // on port 5173 using cmd 'npm run dev'
@@ -6,20 +9,18 @@ import './App.css'
 
 function App() {
   return (
-    <div className="app-container">
-      <button className="login-button">New User/Login</button>
-      <div>
-        <div>
-          <h1 className="main-title">Vroom Vault</h1>
-          <h2>This is your ultimate auto hub!</h2>
-        </div>
-        <p>Track all of your vehicles and toys all in one place!</p>
-        <div>
-          <button className="test-button">Test</button>
-        </div>
+    <Router>
+      <div className="app-container">
+        <nav>
+          <Link to="/login" className="login-button">New User/Login</Link>
+        </nav>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
       </div>
-    </div>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
