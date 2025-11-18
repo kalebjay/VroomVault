@@ -1,0 +1,91 @@
+/* */
+.title {
+  color: #ff9900;
+  text-align: center;
+}
+
+.header {
+    color: #1a77a5;
+}
+
+.loginButton {
+  background-color: #1a77a5;
+  color: #fff;
+  border: 2px solid #5792e5;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.testButton {
+  background-color: #0ec5b3;
+  color: #fff;
+  border: 2px solid #0f8de7;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+.backButton {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 15px;
+  background-color: #6c757d;
+  color: white;
+  border-radius: 5px;
+  margin-bottom: 30px;
+}
+
+.vehiclesButton {
+  display: inline-block;
+  color: #e0e5ea;
+  padding: 10px 15px;
+  background-color: #87a0b6;
+  border: 2px solid #0f8de7;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

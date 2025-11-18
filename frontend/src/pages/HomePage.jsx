@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from './HomePage.module.css';
+import styles from './Pages.module.css';
 
+//
 function HomePage() {
   return (
     <>
