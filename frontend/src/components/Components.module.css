@@ -1,0 +1,135 @@
+.vehicleCard {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+.vehicleHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.vehicleInfo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.vehicleIcon {
+    background-color: #eef2ff;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4f46e5;
+}
+
+.vehicleName {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    color: #111827;
+}
+
+.vehicleDetails {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.vehicleActions {
+    display: flex;
+    gap: 8px;
+}
+
+.iconButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6b7280;
+    font-size: 1rem;
+    padding: 4px;
+}
+
+.iconButton:hover {
+    color: #111827;
+}
+
+.maintenanceSection {
+    margin-top: 16px;
+}
+
+.maintenanceHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.maintenanceHeader h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.addButton {
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.maintenanceItem {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.itemHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.itemName {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+}
+
+.itemDetail {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 4px 0 0;
+}
+
+.statusBadge {
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.overdue {
+    background-color: #dc2626; /* red-600 */
+}
+
+.dueSoon {
+    background-color: #111827; /* gray-900 */
+}
