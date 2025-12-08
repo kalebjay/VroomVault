@@ -11,7 +11,7 @@ function VehiclesPage() {
       id: 1,
       year: 2020,
       make: 'Toyota',
-      model: 'Camry',
+      model: 'Highlander',
       color: 'Silver',
       plate: 'ABC-1234',
       maintenanceItems: [
