@@ -10,10 +10,9 @@ import VehiclesPage from './pages/VehiclesPage';
 // on port 5173 using cmd 'npm run dev'
 // alias npmr='npm run dev'
 
-// A placeholder for your authentication logic
 const useAuth = () => {
-  // In a real app, this would check for a valid token in localStorage or a global state
-  const user = { loggedIn: false }; // Example: change to true to simulate a logged-in user
+  // TODO - check for a valid token in localStorage or a global state
+  const user = { loggedIn: true }; // TEMPORARY: Set to true for development
   return user && user.loggedIn;
 };
 
