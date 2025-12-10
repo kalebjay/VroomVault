@@ -22,5 +22,15 @@ Data for each user's car/s page
 Settings page
 - Notifications - email sent to remind of upcoming dates
   - options for number of days in advance
-  - 
+  - theme of site
+  - tick for each item of desired notification
 
+TODO list
+- connect backend and frontend
+- fully test API on swagger page for data
+- add safety as maintenance item (registration already in)
+- add tire rotation (oil change already in)
+- enhance homepage
+- create settings page
+- complete user login logic
+- add capbablity for multiple users to have their own vehicles

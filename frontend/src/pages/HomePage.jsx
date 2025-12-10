@@ -12,7 +12,11 @@ function HomePage() {
         <h2>This is your ultimate auto hub!</h2>
       </div>
       <p>Track all of your vehicles and toys all in one place!</p>
-      <Link to="/test" className={styles.testButton}>Test</Link>
+      <p>Check out the Vehicles</p>
+      <Link to="/vehicles" className={styles.vehiclesButton}>Vehicles</Link>
+      <div>
+        <Link to="/test" className={styles.testButton}>Test</Link>
+      </div>
     </>
   );
 }
