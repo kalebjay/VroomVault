@@ -3,12 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from db import models
 from db.database import engine
-from router import user, authentication
 from router import user, authentication, maintenance, vehicle
 
 # Usage
 # alias uvi  ='uvicorn main:app --reload' (displays on port 8000)
 # open in browser at http://127.0.0.1:8000/docs#/
+# open DB browser for SQLite with 
+# alias slb ='sqlitebrowser &' (must open DB with ig_api.db file)
 
 app = FastAPI()
 app.include_router(authentication.router)

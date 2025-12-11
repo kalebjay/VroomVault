@@ -31,3 +31,22 @@ def get_user_by_username(db: Session, username: str):
 
 def get_all_users(db: Session):
     return db.query(DbUser).all()
+
+def update_user(id: int, request: UserBase, db: Session):
+    user = db.query(DbUser).filter(DbUser.id == id).first()
+    if not user:
+        raise user_not_found_exception(id)
+    user.username = request.username
+    user.email = request.email
+    user.password = Hash.bcrypt(request.password)
+    db.commit()
+    db.refresh(user)
+    return user
+
+def delete_user(id: int, db: Session):
+    user = db.query(DbUser).filter(DbUser.id == id).first()
+    if not user:
+        raise user_not_found_exception(id)
+    db.delete(user)
+    db.commit()
+    return 'User deleted successfully'

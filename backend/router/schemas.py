@@ -48,16 +48,16 @@ class MaintenanceRecordBase(BaseModel):
     cost: float
     description: str
 
-class OilChangeRecordCreate(MaintenanceRecordBase):
-    type: Literal["oil_change"] = "oil_change"
-    oil_type: str
-    filter_part_number: str
-
 class MaintenanceRecordDisplay(MaintenanceRecordBase):
     id: int
     type: str
     class Config():
         orm_mode = True
+
+class OilChangeRecordCreate(MaintenanceRecordBase):
+    type: Literal["oil_change"] = "oil_change"
+    oil_type: str
+    filter_part_number: str
 
 class OilChangeRecordDisplay(MaintenanceRecordDisplay):
     oil_type: str
@@ -65,6 +65,17 @@ class OilChangeRecordDisplay(MaintenanceRecordDisplay):
     class Config():
         orm_mode = True
 
+class TireChangeRecordCreate(MaintenanceRecordBase):
+    type: Literal["tire_change"] = "tire_change"
+    tire_type: str
+    tire_part_number: str
+
+class TireChangeRecordDisplay(MaintenanceRecordDisplay):
+    tire_type: str
+    tire_part_number: str
+    class Config():
+        orm_mode = True
+
 # A Union to handle different maintenance types in request bodies and responses
-AnyMaintenanceRecordCreate = Union[OilChangeRecordCreate]
-AnyMaintenanceRecordDisplay = Union[OilChangeRecordDisplay]
+AnyMaintenanceRecordCreate = Union[OilChangeRecordCreate, TireChangeRecordCreate]
+AnyMaintenanceRecordDisplay = Union[OilChangeRecordDisplay, TireChangeRecordDisplay]

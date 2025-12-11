@@ -1,5 +1,5 @@
 from db.database import get_db
-from db.db_user import create_user, get_all_users, get_user_by_username, get_user_by_id
+from db.db_user import create_user, get_all_users, get_user_by_username, get_user_by_id, update_user, delete_user
 from fastapi import APIRouter, Depends
 from router.schemas import UserBase, UserDisplay
 from sqlalchemy.orm.session import Session
@@ -28,3 +28,14 @@ def getAllUsers(db: Session = Depends(get_db)):
 @router.get('/{id}', response_model=UserDisplay)
 def getUserById(id: int, db: Session = Depends(get_db)):
     return get_user_by_id(db, id)
+
+# update user
+@router.put('/{id}')
+def updateUser(id: int, request: UserBase, db: Session = Depends(get_db)):
+    return update_user(id, request, db)
+
+# delete user
+@router.delete('/{id}')
+def deleteUser(id: int, db: Session = Depends(get_db)):
+    # TODO only admin user can perform this
+    return delete_user(id, db)

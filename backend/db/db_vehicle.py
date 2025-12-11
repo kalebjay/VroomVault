@@ -47,5 +47,11 @@ def update_vehicle(id: int, request: VehicleBase, db: Session):
     return vehicle
 
 # delete Vehicle
-def delete_vehicle():
-    pass
+def delete_vehicle(id: int, db: Session):
+    vehicle = db.query(DbVehicle).filter(DbVehicle.id == id).first()
+    if not vehicle:
+        raise not_found_exception("Vehicle", id)
+    db.delete(vehicle)
+    db.commit()
+    return 'Vehicle deleted successfully'
+
