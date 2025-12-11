@@ -26,11 +26,14 @@ Settings page
   - tick for each item of desired notification
 
 TODO list
+- fully test API on swagger page for data 
 - connect backend and frontend
-- fully test API on swagger page for data
 - add safety as maintenance item (registration already in)
 - add tire rotation (oil change already in)
 - enhance homepage
 - create settings page
 - complete user login logic
-- add capbablity for multiple users to have their own vehicles
+
+Later
+-
+- 
