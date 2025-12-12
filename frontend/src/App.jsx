@@ -6,19 +6,21 @@ import TestPage from './pages/TestPage';
 import MaintenancePage from './pages/MaintenancePage';
 import VehiclesPage from './pages/VehiclesPage';  
 
+import { useAuth } from './context/AuthContext';
+
 // Start a local frontend react app 
 // on port 5173 using cmd 'npm run dev'
 // alias npmr='npm run dev'
 
-const useAuth = () => {
-  // TODO - check for a valid token in localStorage or a global state
-  const user = { loggedIn: true }; // TEMPORARY: Set to true for development
-  return user && user.loggedIn;
-};
-
 const ProtectedRoute = ({ children }) => {
-  const isAuth = useAuth();
-  return isAuth ? children : <Navigate to="/login" />;
+  const { user, loading } = useAuth();
+  
+  if (loading) {
+    // You can add a loading spinner here
+    return <div>Loading...</div>;
+  }
+  
+  return user ? children : <Navigate to="/login" />;
 };
 
 function App() {
