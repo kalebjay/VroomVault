@@ -6,7 +6,7 @@ import TestPage from './pages/TestPage';
 import MaintenancePage from './pages/MaintenancePage';
 import VehiclesPage from './pages/VehiclesPage';  
 
-import { useAuth } from './context/AuthContext';
+import { useAuth } from './utils/AuthContext';
 
 // Start a local frontend react app 
 // on port 5173 using cmd 'npm run dev'

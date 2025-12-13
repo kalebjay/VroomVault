@@ -1,11 +1,71 @@
-import React from 'react';
+import { React, useState, useEffect } from 'react';
+import apiClient from '../utils/apiClient';
 import { Link } from 'react-router-dom';
 import styles from './Pages.module.css';
 import VehicleCard from '../components/VehicleCard';
 
-//
-function VehiclesPage() {
-  // Mock data based on the image
+
+const VehiclesPage = () => {
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const response = await apiClient.get('/vehicles');
+        setVehicles(response.data);
+      } catch (err) {
+        setError('Failed to fetch vehicles.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVehicles();
+  }, []);
+
+  if (loading) return <div>Loading vehicles...</div>;
+  if (error) return <div style={{ color: 'red' }}>{error}</div>;
+  
+  return (
+    <div className={styles.pageContainer}>
+      <h1 className={styles.header}>My Vehicles</h1>
+      <p className={styles.subHeader}>Track your vehicles and maintenance schedules</p>
+      {vehicles.map(vehicle => <VehicleCard key={vehicle.id} vehicle={vehicle} />)}
+      <Link to="/" className={styles.backButton}>Back to Home</Link>
+    </div>
+  );
+}
+
+export default VehiclesPage;
+
+{/* Code to try next
+  
+  return (
+    <div>
+      <h1>My Vehicles</h1>
+      
+      {vehicles.length === 0 ? (
+        <p>You haven't added any vehicles yet.</p>
+      ) : (
+        <ul>
+          {vehicles.map((vehicle) => (
+            <li key={vehicle.id}>
+              {vehicle.year} {vehicle.make} {vehicle.model} - VIN: {vehicle.vin}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  ) 
+    
+*/}
+
+
+
+{/* Test Data
+
   const vehicles = [
     {
       id: 1,
@@ -56,15 +116,6 @@ function VehiclesPage() {
       ],
     },
   ];
-
-  return (
-    <div className={styles.pageContainer}>
-      <h1 className={styles.header}>My Vehicles</h1>
-      <p className={styles.subHeader}>Track your vehicles and maintenance schedules</p>
-      {vehicles.map(vehicle => <VehicleCard key={vehicle.id} vehicle={vehicle} />)}
-      <Link to="/" className={styles.backButton}>Back to Home</Link>
-    </div>
-  );
-}
-
-export default VehiclesPage;
+  
+  
+  */}
