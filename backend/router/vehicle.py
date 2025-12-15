@@ -9,7 +9,7 @@ from router.schemas import UserAuth
 
 
 router = APIRouter(
-    prefix='/vehicle',
+    prefix='/vehicles',
     tags=['vehicle']
 )
 
@@ -22,18 +22,13 @@ def createVehicle(request: VehicleBase,
         raise credentials_exception(detail='Authentication Failed')
     return create_vehicle(db, request, current_user)
 
-# get a vehicle based on id
-@router.get('/{id}')
-def getVehicle(id: int, db: Session = Depends(get_db)):
-    return get_vehicle_by_id(db, id)
-
 # get all vehicles per user
 @router.get('', response_model=list[VehicleDisplay])
 def getUserVehicles(db: Session = Depends(get_db),
                    current_user: UserAuth = Depends(get_current_user)
     ):
     return get_all_vehicles_per_user(db, current_user)
-   
+
 # update vehicle  
 @router.put('/{id}')
 def updateVehicle(id: int,
@@ -60,3 +55,16 @@ def deleteVehicle(id: int,
     if vehicle.owner_id != current_user.id:
         raise forbidden_exception(detail="Not authorized to update this vehicle")
     return delete_vehicle(id, db)
+
+#get a vehicle based on id
+@router.get('/{id}', response_model=VehicleDisplay)
+def getVehicle(id: int,
+               db: Session = Depends(get_db),
+               current_user: UserAuth = Depends(get_current_user)
+    ):
+    vehicle = get_vehicle_by_id(db, id)
+    if not vehicle:
+        raise not_found_exception("Vehicle", id)
+    if vehicle.owner_id != current_user.id:
+        raise forbidden_exception(detail="Not authorized to view this vehicle")
+    return vehicle

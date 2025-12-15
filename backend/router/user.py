@@ -5,7 +5,7 @@ from router.schemas import UserBase, UserDisplay
 from sqlalchemy.orm.session import Session
 
 router = APIRouter(
-    prefix='/user',
+    prefix='/users',
     tags=['user']
 )
 
@@ -14,20 +14,20 @@ router = APIRouter(
 def createUser(request: UserBase, db: Session = Depends(get_db)):
     return create_user(db, request)
 
-# get user with username    
-@router.get('/username/{username}')
-def getUserByUsername(username: str, db: Session = Depends(get_db)):
-    return get_user_by_username(db, username)
-
 # get all users
 @router.get('', response_model=list[UserDisplay])
 def getAllUsers(db: Session = Depends(get_db)):
     return get_all_users(db)
-    
+
 # get user with ID
 @router.get('/{id}', response_model=UserDisplay)
 def getUserById(id: int, db: Session = Depends(get_db)):
     return get_user_by_id(db, id)
+
+# get user with username    
+@router.get('/username/{username}')
+def getUserByUsername(username: str, db: Session = Depends(get_db)):
+    return get_user_by_username(db, username)
 
 # update user
 @router.put('/{id}')

@@ -8,7 +8,7 @@ from db.database import get_db
 from db import db_user
  
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 SECRET_KEY = 'f69467ab884ea158b5cd6c563d7182c51dd7878019e2964c' \
 'f0ff59dc93bf3c2b66a01be109ce6321a66be2271206cf84daeaa84af3126781b2f4204afdbef345'
 ALGORITHM = 'HS256'
@@ -35,7 +35,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("username")
+        username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
     except JWTError:
@@ -45,4 +45,3 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise credentials_exception
     
     return user
-

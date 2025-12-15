@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from db import models
@@ -12,17 +12,22 @@ from router import user, authentication, maintenance, vehicle
 # alias slb ='sqlitebrowser &' (must open DB with ig_api.db file)
 
 app = FastAPI()
-app.include_router(authentication.router)
-app.include_router(vehicle.router)
-app.include_router(user.router)
-app.include_router(maintenance.router)
-#app.include_router(post.router)
+
+# Create a master router for the /api prefix
+api_router = APIRouter(prefix="/api")
+
+api_router.include_router(authentication.router)
+api_router.include_router(user.router)
+api_router.include_router(vehicle.router)
+api_router.include_router(maintenance.router)
 
 
 #@app.get("/")
 #def root():
 #    return "Yo sup foo"
 
+
+app.include_router(api_router)
 
 origins = ['http://localhost:5173']
 app.add_middleware(
@@ -37,5 +42,3 @@ app.add_middleware(
 models.Base.metadata.create_all(engine)
 
 app.mount('/images', StaticFiles(directory='images'), name='images')
-
-

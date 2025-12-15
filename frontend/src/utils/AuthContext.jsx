@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import apiClient from '../utils/apiClient';
+import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext(null);
 
@@ -11,22 +12,34 @@ export const AuthProvider = ({ children }) => {
     // Check for a token on initial load
     const token = localStorage.getItem('authToken');
     if (token) {
-      // Here you might want to verify the token with the backend
-      // For now, we'll assume if a token exists, the user is logged in.
-      // A better approach is to have a /me or /verify-token endpoint.
-      setUser({ loggedIn: true }); // Or set user details from token
+      // If a token exists, set the auth header for all subsequent requests
+      apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      // Decode the token to get user details
+      const decodedToken = jwtDecode(token);
+      // The 'sub' claim in a JWT typically holds the subject (username in this case)
+      setUser({ loggedIn: true, username: decodedToken.sub, id: decodedToken.id });
     }
     setLoading(false);
   }, []);
 
   const login = async (credentials) => {
     try {
-      const response = await apiClient.post('/auth/login', credentials);
-      const { token, userDetails } = response.data; // Adjust based on your API response
-      localStorage.setItem('authToken', token);
-      apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setUser({ loggedIn: true, ...userDetails });
+      // FastAPI's OAuth2PasswordRequestForm expects form data
+      const form = new URLSearchParams();
+      form.append('username', credentials.username);
+      form.append('password', credentials.password);
+
+      const response = await apiClient.post('/auth/login', form, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      });
+
+      const { access_token, user_id, username } = response.data;
+      localStorage.setItem('authToken', access_token);
+      apiClient.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+      setUser({ loggedIn: true, id: user_id, username: username });
     } catch (error) {
+      // Clear any stale auth data on login failure
+      logout();
       console.error("Login failed:", error);
       // Handle login errors (e.g., show a message to the user)
       throw error;
@@ -47,9 +60,3 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   return useContext(AuthContext);
 };
-
-
-
-
-
-
