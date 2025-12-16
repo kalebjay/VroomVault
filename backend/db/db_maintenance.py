@@ -44,4 +44,4 @@ def delete_maintenance_record(db: Session, record_id: int):
     record = get_record_by_id(db, record_id)
     db.delete(record)
     db.commit()
-    return "Maintenance record deleted successfully"
+    return

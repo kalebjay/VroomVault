@@ -10,10 +10,14 @@ import AddMaintenanceModal from '../components/AddMaintenanceModal'; // New impo
 const VehiclesPage = () => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMaintenanceModalOpen, setIsMaintenanceModalOpen] = useState(false); // New state
-  const [selectedVehicleIdForMaintenance, setSelectedVehicleIdForMaintenance] = useState(null); // New state
+  const [error, setError] = useState('');
+  const [actionError, setActionError] = useState(''); // For errors on delete/update actions
+  const [modalState, setModalState] = useState({
+    addVehicle: false,
+    addMaintenance: false,
+    editVehicle: null, // Will hold the vehicle object to edit
+    selectedVehicleId: null,
+  });
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -32,20 +36,68 @@ const VehiclesPage = () => {
 
   const handleVehicleAdded = (newVehicle) => {
     setVehicles(prevVehicles => [...prevVehicles, newVehicle]);
-    // No need to reset form here, modal handles it on close
+    setModalState({ ...modalState, addVehicle: false });
+  };
+
+  const handleVehicleUpdated = (updatedVehicle) => {
+    setVehicles(prevVehicles =>
+      prevVehicles.map(vehicle =>
+        vehicle.id === updatedVehicle.id ? updatedVehicle : vehicle
+      )
+    );
+    // Close modal and clear editing state
+    setModalState({ ...modalState, editVehicle: null });
   };
 
   // New handler for adding maintenance items
   const handleMaintenanceAdded = (vehicleId, newMaintenanceItem) => {
+    setActionError('');
     setVehicles(prevVehicles =>
       prevVehicles.map(vehicle =>
         vehicle.id === vehicleId
-          ? { ...vehicle, maintenanceItems: [...(vehicle.maintenanceItems || []), newMaintenanceItem] }
+          ? { ...vehicle, maint_records: [...(vehicle.maint_records || []), newMaintenanceItem] }
           : vehicle
       )
     );
-    setIsMaintenanceModalOpen(false); // Close modal after adding
-    setSelectedVehicleIdForMaintenance(null); // Clear selected vehicle
+    // Close modal and clear selected vehicle
+    setModalState({ ...modalState, addMaintenance: false, selectedVehicleId: null });
+  };
+
+  const openMaintenanceModal = (vehicleId) => {
+    setActionError('');
+    setModalState({ ...modalState, addMaintenance: true, selectedVehicleId: vehicleId });
+  };
+
+  const handleMaintenanceDeleted = async (vehicleId, recordId) => {
+    // Optional: Add a confirmation dialog before deleting
+    // if (!window.confirm("Are you sure you want to delete this maintenance record?")) {
+    //   return;
+    // }
+    try {
+      await apiClient.delete(`/vehicles/${vehicleId}/maintenance/${recordId}`);
+      setActionError('');
+      // Update state to remove the item from the UI
+      setVehicles(prevVehicles =>
+        prevVehicles.map(v => v.id === vehicleId ? { ...v, maint_records: v.maint_records.filter(r => r.id !== recordId) } : v)
+      );
+    } catch (err) {
+      console.error("Failed to delete maintenance record", err);
+      setActionError('Failed to delete maintenance record. Please try again.');
+    }
+  };
+
+  const handleVehicleDeleted = async (vehicleId) => {
+    if (window.confirm("Are you sure you want to permanently delete this vehicle and all its records?")) {
+      try {
+        await apiClient.delete(`/vehicles/${vehicleId}`);
+        setActionError('');
+        // Update state to remove the vehicle from the UI
+        setVehicles(prevVehicles => prevVehicles.filter(v => v.id !== vehicleId));
+      } catch (err) {
+        console.error("Failed to delete vehicle", err);
+        setActionError("Failed to delete vehicle. Please try again.");
+      }
+    }
   };
 
   if (loading) return <div>Loading vehicles...</div>;
@@ -58,36 +110,42 @@ const VehiclesPage = () => {
           <h1 className={styles.header}>My Vehicles</h1>
           <p className={styles.subHeader}>Track your vehicles and maintenance schedules</p>
         </div>
-        <button onClick={() => setIsModalOpen(true)} className={styles.button}>
+        <button onClick={() => setModalState({ ...modalState, addVehicle: true })} className={styles.button}>
           Add Vehicle
         </button>
       </div>
+      {actionError && <p style={{ color: 'red' }}>{actionError}</p>}
       {vehicles.length === 0 ? (
-        <p>You haven't added any vehicles yet.</p>
+        <div className={styles.emptyState}>
+          <p>No vehicles found.</p>
+          <p>Click "Add Vehicle" to get started!</p>
+        </div>
       ) : (
         <ul>
           {vehicles.map(vehicle => (
             <VehicleCard
               key={vehicle.id}
               vehicle={vehicle}
-              openMaintenanceModal={(vehicleId) => { // New prop
-                setSelectedVehicleIdForMaintenance(vehicleId);
-                setIsMaintenanceModalOpen(true);
-              }}
+              openMaintenanceModal={openMaintenanceModal}
+              onEditVehicle={() => setModalState({ ...modalState, editVehicle: vehicle })}
+              onDeleteMaintenance={handleMaintenanceDeleted} // Pass delete handler
+              onDeleteVehicle={() => handleVehicleDeleted(vehicle.id)}
             />
           ))}
         </ul>
       )}
       <AddVehicleModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={modalState.addVehicle || !!modalState.editVehicle}
+        onClose={() => setModalState({ ...modalState, addVehicle: false, editVehicle: null })}
         onVehicleAdded={handleVehicleAdded}
+        onVehicleUpdated={handleVehicleUpdated}
+        vehicleToEdit={modalState.editVehicle}
       />
       <AddMaintenanceModal // New modal
-        isOpen={isMaintenanceModalOpen}
-        onClose={() => setIsMaintenanceModalOpen(false)}
+        isOpen={modalState.addMaintenance}
+        onClose={() => setModalState({ ...modalState, addMaintenance: false, selectedVehicleId: null })}
         onMaintenanceAdded={handleMaintenanceAdded}
-        vehicleId={selectedVehicleIdForMaintenance}
+        vehicleId={modalState.selectedVehicleId}
       />
       <Link to="/" className={styles.backButton}>Back to Home</Link>
     </div>

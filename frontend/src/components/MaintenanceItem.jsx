@@ -2,21 +2,21 @@ import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
 import styles from './Components.module.css';
 
-function MaintenanceItem({ item }) {
-  const statusClass = item.status === 'Overdue' ? styles.overdue : styles.dueSoon;
+// This component now displays a COMPLETED maintenance record.
+function MaintenanceItem({ item, onDelete }) {
+  const formattedDate = new Date(item.date).toLocaleDateString();
 
   return (
     <div className={styles.maintenanceItem}>
       <div className={styles.itemHeader}>
         <div className={styles.itemName}>
-          <h4>{item.name}</h4>
-          <span className={`${styles.statusBadge} ${statusClass}`}>{item.status}</span>
+          {/* Capitalize the type for display */}
+          <h4>{item.type.replace('_', ' ')}</h4>
         </div>
-        <button className={styles.iconButton}><FaTrashAlt /></button>
+        <button onClick={onDelete} className={styles.iconButton} title="Delete Record"><FaTrashAlt /></button>
       </div>
-      <p className={styles.itemDetail}>Due: {item.dueDate}</p>
-      {item.lastService && <p className={styles.itemDetail}>Last: {item.lastService}</p>}
-      {item.interval && <p className={styles.itemDetail}>{item.interval}</p>}
+      <p className={styles.itemDetail}>Date: {formattedDate} • Mileage: {item.mileage.toLocaleString()} • Cost: ${item.cost.toFixed(2)}</p>
+      <p className={styles.itemDetail}>Notes: {item.description}</p>
     </div>
   );
 }

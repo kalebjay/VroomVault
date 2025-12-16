@@ -5,14 +5,14 @@ from utils.exceptions import not_found_exception
 from sqlalchemy.orm import Session
 
 
-def create_vehicle(db: Session, request: VehicleBase, user: DbUser):
+def create_vehicle(db: Session, request: VehicleBase, user: UserAuth):
     new_vehicle = DbVehicle(
         make = request.make,
         model = request.model,
         year = request.year,
         vin = request.vin,
         license_plate = request.license_plate,
-        owner_id = user.id
+        owner_id = user.id # UserAuth has an 'id' attribute
     )
     db.add(new_vehicle)
     db.commit()
@@ -47,11 +47,7 @@ def update_vehicle(id: int, request: VehicleBase, db: Session):
     return vehicle
 
 # delete Vehicle
-def delete_vehicle(id: int, db: Session):
-    vehicle = db.query(DbVehicle).filter(DbVehicle.id == id).first()
-    if not vehicle:
-        raise not_found_exception("Vehicle", id)
+def delete_vehicle(db: Session, vehicle: DbVehicle):
     db.delete(vehicle)
     db.commit()
-    return 'Vehicle deleted successfully'
-
+    return

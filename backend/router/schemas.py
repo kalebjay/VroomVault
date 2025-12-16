@@ -34,12 +34,6 @@ class VehicleBase(BaseModel):
     vin: str
     license_plate: str
 
-class VehicleDisplay(VehicleBase):
-    id: int
-    owner_id: int
-    class Config():
-        orm_mode = True
-
 # =================== Maintenance Record Schemas ===================
 
 class MaintenanceRecordBase(BaseModel):
@@ -79,3 +73,12 @@ class TireChangeRecordDisplay(MaintenanceRecordDisplay):
 # A Union to handle different maintenance types in request bodies and responses
 AnyMaintenanceRecordCreate = Union[OilChangeRecordCreate, TireChangeRecordCreate]
 AnyMaintenanceRecordDisplay = Union[OilChangeRecordDisplay, TireChangeRecordDisplay]
+
+# =================== Updated VehicleDisplay Schema ===================
+
+class VehicleDisplay(VehicleBase):
+    id: int
+    owner_id: int
+    maint_records: List[AnyMaintenanceRecordDisplay] = []
+    class Config():
+        orm_mode = True

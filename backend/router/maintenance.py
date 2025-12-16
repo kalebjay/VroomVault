@@ -20,26 +20,10 @@ router = APIRouter(
     tags=['maintenance']
 )
 
-@router.post('', response_model=AnyMaintenanceRecordDisplay, status_code=status.HTTP_201_CREATED)
-def create_maintenance_record(vehicle_id: int,
-                              request: AnyMaintenanceRecordCreate,
-                              db: Session = Depends(get_db),
-                              current_user: UserAuth = Depends(get_current_user)
-    ):
-    # Find the vehicle and ensure it belongs to the current user
-    vehicle = db.query(models.DbVehicle).filter(models.DbVehicle.id == vehicle_id).first()
-    if not vehicle:
-        raise not_found_exception("Vehicle", vehicle_id)
-    if vehicle.owner_id != current_user.id:
-        raise forbidden_exception(detail="Not authorized to add records to this vehicle")
-
-    return db_create_maintenance_record(db, request, vehicle_id)
-
 @router.get('', response_model=List[AnyMaintenanceRecordDisplay])
 def get_all_maintenance_for_vehicle(vehicle_id: int,
                                     db: Session = Depends(get_db),
-                                    current_user: UserAuth = Depends(get_current_user)
-    ):
+                                    current_user: UserAuth = Depends(get_current_user)):
     # Find the vehicle and ensure it belongs to the current user
     vehicle = db.query(models.DbVehicle).filter(models.DbVehicle.id == vehicle_id).first()
     if not vehicle:
@@ -49,13 +33,26 @@ def get_all_maintenance_for_vehicle(vehicle_id: int,
 
     return get_all_records_for_vehicle(db, vehicle_id)
 
+@router.post('', response_model=AnyMaintenanceRecordDisplay, status_code=status.HTTP_201_CREATED)
+def create_maintenance_record(vehicle_id: int,
+                              request: AnyMaintenanceRecordCreate,
+                                    db: Session = Depends(get_db),
+                                    current_user: UserAuth = Depends(get_current_user)):
+    # Find the vehicle and ensure it belongs to the current user
+    vehicle = db.query(models.DbVehicle).filter(models.DbVehicle.id == vehicle_id).first()
+    if not vehicle:
+        raise not_found_exception("Vehicle", vehicle_id)
+    if vehicle.owner_id != current_user.id:
+        raise forbidden_exception(detail="Not authorized to add records to this vehicle")
+
+    return db_create_maintenance_record(db, request, vehicle_id)
+
 @router.put('/{record_id}', response_model=AnyMaintenanceRecordDisplay)
 def update_record(vehicle_id: int, # Included for path consistency, but not directly used in logic
                   record_id: int,
                   request: AnyMaintenanceRecordCreate,
                   db: Session = Depends(get_db),
-                  current_user: UserAuth = Depends(get_current_user)
-    ):
+                  current_user: UserAuth = Depends(get_current_user)):
     record = get_record_by_id(db, record_id)
     if record.vehicle.owner_id != current_user.id:
         raise forbidden_exception(detail="Not authorized to update this record")
@@ -69,11 +66,10 @@ def update_record(vehicle_id: int, # Included for path consistency, but not dire
 def delete_record(vehicle_id: int, # Included for path consistency
                   record_id: int,
                   db: Session = Depends(get_db),
-                  current_user: UserAuth = Depends(get_current_user)
-    ):
+                  current_user: UserAuth = Depends(get_current_user)):
     record = get_record_by_id(db, record_id)
     if record.vehicle.owner_id != current_user.id:
         raise forbidden_exception(detail="Not authorized to delete this record")
 
     delete_maintenance_record(db, record_id)
-    return {"detail": "Maintenance record deleted successfully"}
+    return

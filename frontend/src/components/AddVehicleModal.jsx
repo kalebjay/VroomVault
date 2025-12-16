@@ -32,7 +32,7 @@ const AddVehicleModal = ({ isOpen, onClose, onVehicleAdded }) => {
     }
 
     try {
-      const response = await apiClient.post('/vehicles', {
+      const response = await apiClient.post('/api/vehicles', {
         ...vehicleData, // Sends make, model, color, vin, license_plate
         year: parseInt(vehicleData.year, 10) // Ensure year is an integer
       });

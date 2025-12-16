@@ -25,9 +25,10 @@ class DbVehicle(Base):
     exp_registration = Column(DateTime(timezone=True), default=datetime.now)
     exp_safety = Column(DateTime(timezone=True), default=datetime.now)
     last_oil = Column(DateTime(timezone=True), default=datetime.now)
-
+ 
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("DbUser", back_populates="vehicles")
+    # Relationship to completed maintenance records
     maint_records = relationship("MaintenanceRecord", back_populates="vehicle")
 
 class MaintenanceRecord(Base):
