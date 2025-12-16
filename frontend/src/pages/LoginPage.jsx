@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useAuth } from '../utils/AuthContext';
+import apiClient from '../utils/apiClient';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './Pages.module.css';
 
 //
 const LoginPage = () => {
+  const [isLoginMode, setIsLoginMode] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState(''); // For registration
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login, user } = useAuth();
@@ -25,30 +28,61 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
+
     try {
-      await login({ username, password });
-      // On successful login, the useEffect will handle the navigation.
+      if (isLoginMode) {
+        await login({ username, password });
+        // On successful login, the useEffect will handle the navigation.
+      } else {
+        // Handle registration
+        await apiClient.post('/users', { username, email, password });
+        // After successful registration, automatically log the user in
+        await login({ username, password });
+      }
     } catch (err) {
-      setError('Failed to log in. Please check your credentials.');
+      if (isLoginMode) {
+        setError('Failed to log in. Please check your credentials.');
+      } else {
+        // More specific error handling could be added here based on API responses
+        setError('Registration failed. The username or email may already be taken.');
+      }
     } finally {
       setLoading(false);
     }
   };
+
+  const toggleMode = () => {
+    setIsLoginMode(!isLoginMode);
+    setError(''); // Clear errors when switching modes
+  };
   
   return (
-    <div>
-      <h2 className={styles.title}>Login / New User</h2>
+    <div className={styles.pageContainer}>
+      <h2 className={styles.title}>{isLoginMode ? 'Login' : 'Create Account'}</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Username or Email:</label>
+        <div className={styles.formGroup}>
+          <label htmlFor="username">Username:</label>
           <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required/>
         </div>
-        <div>
-          <label>Password:</label>
+        {!isLoginMode && (
+          <div className={styles.formGroup}>
+            <label htmlFor="email">Email:</label>
+            <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          </div>
+        )}
+        <div className={styles.formGroup}>
+          <label htmlFor="password">Password:</label>
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
         </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
+        <button type="submit" className={styles.button} disabled={loading}>
+          {loading ? 'Processing...' : (isLoginMode ? 'Login' : 'Create Account')}
+        </button>
+        <div className={styles.formFooter}>
+          <button type="button" onClick={toggleMode} className={styles.linkButton}>
+            {isLoginMode ? 'Need an account? Register' : 'Already have an account? Login'}
+          </button>
+        </div>
         <Link to="/" className={styles.backButton}>Back to Home</Link>
       </form>
     </div>    

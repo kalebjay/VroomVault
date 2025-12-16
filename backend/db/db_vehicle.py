@@ -10,8 +10,11 @@ def create_vehicle(db: Session, request: VehicleBase, user: UserAuth):
         make = request.make,
         model = request.model,
         year = request.year,
+        color = request.color,
         vin = request.vin,
         license_plate = request.license_plate,
+        exp_registration = request.exp_registration,
+        exp_safety = request.exp_safety,
         owner_id = user.id # UserAuth has an 'id' attribute
     )
     db.add(new_vehicle)
@@ -40,8 +43,12 @@ def update_vehicle(id: int, request: VehicleBase, db: Session):
     vehicle.make = request.make
     vehicle.model = request.model
     vehicle.year = request.year
+    vehicle.color = request.color
     vehicle.vin = request.vin
     vehicle.license_plate = request.license_plate
+    vehicle.exp_registration = request.exp_registration
+    vehicle.exp_safety = request.exp_safety
+
     db.commit()
     db.refresh(vehicle)
     return vehicle

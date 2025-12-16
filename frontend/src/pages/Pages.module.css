@@ -9,10 +9,20 @@
 }
 
 .headerContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  /* Center the text content within the header */
+  text-align: center;
   margin-bottom: 2rem;
+}
+
+.centeredActionContainer {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.listReset {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .button {

@@ -60,7 +60,7 @@ def update_record(vehicle_id: int, # Included for path consistency, but not dire
     if record.type != request.type:
         raise bad_request_exception(detail=f"Cannot change record type from '{record.type}' to '{request.type}'. Please delete and create a new record.")
 
-    return update_maintenance_record(db, record_id, request)
+    return update_maintenance_record(db, record, request)
 
 @router.delete('/{record_id}', status_code=status.HTTP_204_NO_CONTENT)
 def delete_record(vehicle_id: int, # Included for path consistency

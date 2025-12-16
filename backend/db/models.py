@@ -10,7 +10,6 @@ class DbUser(Base):
     username = Column(String)
     email = Column(String)
     password = Column(String)
-    #items = relationship('DbPost', back_populates='user')
     vehicles = relationship("DbVehicle", back_populates="owner")
 
 
@@ -20,6 +19,7 @@ class DbVehicle(Base):
     make = Column(String)
     model = Column(String)
     year = Column(Integer)
+    color = Column(String)
     vin = Column(String)
     license_plate = Column(String)
     exp_registration = Column(DateTime(timezone=True), default=datetime.now)

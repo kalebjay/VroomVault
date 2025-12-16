@@ -31,8 +31,7 @@ def get_record_by_id(db: Session, record_id: int):
         raise not_found_exception("Maintenance Record", record_id)
     return record
 
-def update_maintenance_record(db: Session, record_id: int, request: AnyMaintenanceRecordCreate):
-    record = get_record_by_id(db, record_id)
+def update_maintenance_record(db: Session, record: models.MaintenanceRecord, request: AnyMaintenanceRecordCreate):
     # Update fields from the request
     for key, value in request.dict(exclude_unset=True).items():
         setattr(record, key, value)

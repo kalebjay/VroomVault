@@ -16,6 +16,7 @@ const VehiclesPage = () => {
     addVehicle: false,
     addMaintenance: false,
     editVehicle: null, // Will hold the vehicle object to edit
+    editMaintenance: null, // Will hold the { vehicleId, record } object
     selectedVehicleId: null,
   });
 
@@ -63,9 +64,30 @@ const VehiclesPage = () => {
     setModalState({ ...modalState, addMaintenance: false, selectedVehicleId: null });
   };
 
+  const handleMaintenanceUpdated = (vehicleId, updatedRecord) => {
+    setActionError('');
+    setVehicles(prevVehicles =>
+      prevVehicles.map(vehicle =>
+        vehicle.id === vehicleId
+          ? {
+              ...vehicle,
+              maint_records: vehicle.maint_records.map(r =>
+                r.id === updatedRecord.id ? updatedRecord : r
+              ),
+            }
+          : vehicle
+      )
+    );
+    setModalState({ ...modalState, editMaintenance: null });
+  };
+
   const openMaintenanceModal = (vehicleId) => {
     setActionError('');
     setModalState({ ...modalState, addMaintenance: true, selectedVehicleId: vehicleId });
+  };
+
+  const openMaintenanceEditModal = (vehicleId, record) => {
+    setModalState({ ...modalState, editMaintenance: { vehicleId, record } });
   };
 
   const handleMaintenanceDeleted = async (vehicleId, recordId) => {
@@ -110,23 +132,24 @@ const VehiclesPage = () => {
           <h1 className={styles.header}>My Vehicles</h1>
           <p className={styles.subHeader}>Track your vehicles and maintenance schedules</p>
         </div>
-        <button onClick={() => setModalState({ ...modalState, addVehicle: true })} className={styles.button}>
-          Add Vehicle
-        </button>
       </div>
       {actionError && <p style={{ color: 'red' }}>{actionError}</p>}
+      <div className={styles.centeredActionContainer}>
+        <button onClick={() => setModalState({ ...modalState, addVehicle: true })} className={styles.button}>Add Vehicle</button>
+      </div>
       {vehicles.length === 0 ? (
         <div className={styles.emptyState}>
           <p>No vehicles found.</p>
           <p>Click "Add Vehicle" to get started!</p>
         </div>
       ) : (
-        <ul>
+        <ul className={styles.listReset}>
           {vehicles.map(vehicle => (
             <VehicleCard
               key={vehicle.id}
               vehicle={vehicle}
               openMaintenanceModal={openMaintenanceModal}
+              onEditMaintenance={openMaintenanceEditModal}
               onEditVehicle={() => setModalState({ ...modalState, editVehicle: vehicle })}
               onDeleteMaintenance={handleMaintenanceDeleted} // Pass delete handler
               onDeleteVehicle={() => handleVehicleDeleted(vehicle.id)}
@@ -142,10 +165,12 @@ const VehiclesPage = () => {
         vehicleToEdit={modalState.editVehicle}
       />
       <AddMaintenanceModal // New modal
-        isOpen={modalState.addMaintenance}
-        onClose={() => setModalState({ ...modalState, addMaintenance: false, selectedVehicleId: null })}
+        isOpen={modalState.addMaintenance || !!modalState.editMaintenance}
+        onClose={() => setModalState({ ...modalState, addMaintenance: false, editMaintenance: null })}
         onMaintenanceAdded={handleMaintenanceAdded}
-        vehicleId={modalState.selectedVehicleId}
+        onMaintenanceUpdated={handleMaintenanceUpdated}
+        vehicleId={modalState.selectedVehicleId || modalState.editMaintenance?.vehicleId}
+        itemToEdit={modalState.editMaintenance?.record}
       />
       <Link to="/" className={styles.backButton}>Back to Home</Link>
     </div>
@@ -162,8 +187,11 @@ export default VehiclesPage;
       year: 2020,
       make: 'Toyota',
       model: 'Highlander',
-      color: 'Silver',
-      plate: 'ABC-1234',
+      vin: '123XYZ',
+      license_plate: 'ABC-1234',
+      color: 'Magnetic Gray',
+      exp_registration: '2025-08-31T00:00:00',
+      exp_safety: '2025-08-31T00:00:00',
       maintenanceItems: [
         {
           id: 1,
@@ -183,11 +211,13 @@ export default VehiclesPage;
     },
     {
       id: 1,
-      year: 2002,
-      make: 'Chrylser',
+      year: 2002, // Corrected typo from 'Chrylser'
+      make: 'Chrysler',
       model: 'Sebring',
+      vin: '456ABC',
+      license_plate: 'ZKELF',
       color: 'White',
-      plate: 'ZKELF',
+      exp_registration: '2026-06-29T00:00:00',
       maintenanceItems: [
         {
           id: 1,

@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel
-from typing import List, Literal, Union
+from typing import List, Literal, Union, Optional
 
 
 class UserBase(BaseModel):
@@ -33,6 +33,9 @@ class VehicleBase(BaseModel):
     year: int
     vin: str
     license_plate: str
+    color: Optional[str] = None
+    exp_registration: Optional[datetime] = None
+    exp_safety: Optional[datetime] = None
 
 # =================== Maintenance Record Schemas ===================
 

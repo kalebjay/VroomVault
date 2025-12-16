@@ -175,3 +175,25 @@
   background-color: #1a77a5;
   color: white;
 }
+
+/* MaintenanceItem Styles */
+.maintenanceItem {
+  padding: 1rem;
+  border-top: 1px solid #34495e;
+}
+
+.maintenanceItem:first-of-type {
+  border-top: none; /* No top border for the first item */
+}
+
+.maintenanceItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.maintenanceItem h4 {
+  margin: 0 0 0.5rem 0;
+  color: #bdc3c7;
+  text-transform: capitalize;
+}
