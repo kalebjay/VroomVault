@@ -3,7 +3,7 @@ import { FaPen, FaTrashAlt, FaPlus } from 'react-icons/fa';
 import styles from './Components.module.css';
 import MaintenanceItem from './MaintenanceItem';
 
-function VehicleCard({ vehicle }) {
+function VehicleCard({ vehicle, openMaintenanceModal }) { // New prop
   return (
     <div className={styles.vehicleCard}>
       <div className={styles.vehicleHeader}>
@@ -13,7 +13,7 @@ function VehicleCard({ vehicle }) {
           </div>
           <div>
             <h2 className={styles.vehicleName}>{`${vehicle.year} ${vehicle.make} ${vehicle.model}`}</h2>
-            <p className={styles.vehicleDetails}>{`${vehicle.color} • ${vehicle.plate}`}</p>
+            <p className={styles.vehicleDetails}>{`${vehicle.color} • ${vehicle.license_plate}`}</p>
           </div>
         </div>
         <div className={styles.vehicleActions}>
@@ -25,9 +25,9 @@ function VehicleCard({ vehicle }) {
       <div className={styles.maintenanceSection}>
         <div className={styles.maintenanceHeader}>
           <h3>Maintenance Items</h3>
-          <button className={styles.addButton}><FaPlus /> Add</button>
+          <button className={styles.addButton} onClick={() => openMaintenanceModal(vehicle.id)}><FaPlus /> Add</button>
         </div>
-        {vehicle.maintenanceItems.map(item => (
+        {Array.isArray(vehicle.maintenanceItems) && vehicle.maintenanceItems.map(item => (
           <MaintenanceItem key={item.id} item={item} />
         ))}
       </div>

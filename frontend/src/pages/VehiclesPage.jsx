@@ -3,12 +3,17 @@ import apiClient from '../utils/apiClient';
 import { Link } from 'react-router-dom';
 import styles from './Pages.module.css';
 import VehicleCard from '../components/VehicleCard';
+import AddVehicleModal from '../components/AddVehicleModal';
+import AddMaintenanceModal from '../components/AddMaintenanceModal'; // New import
 
 
 const VehiclesPage = () => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMaintenanceModalOpen, setIsMaintenanceModalOpen] = useState(false); // New state
+  const [selectedVehicleIdForMaintenance, setSelectedVehicleIdForMaintenance] = useState(null); // New state
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -25,44 +30,71 @@ const VehiclesPage = () => {
     fetchVehicles();
   }, []);
 
+  const handleVehicleAdded = (newVehicle) => {
+    setVehicles(prevVehicles => [...prevVehicles, newVehicle]);
+    // No need to reset form here, modal handles it on close
+  };
+
+  // New handler for adding maintenance items
+  const handleMaintenanceAdded = (vehicleId, newMaintenanceItem) => {
+    setVehicles(prevVehicles =>
+      prevVehicles.map(vehicle =>
+        vehicle.id === vehicleId
+          ? { ...vehicle, maintenanceItems: [...(vehicle.maintenanceItems || []), newMaintenanceItem] }
+          : vehicle
+      )
+    );
+    setIsMaintenanceModalOpen(false); // Close modal after adding
+    setSelectedVehicleIdForMaintenance(null); // Clear selected vehicle
+  };
+
   if (loading) return <div>Loading vehicles...</div>;
   if (error) return <div style={{ color: 'red' }}>{error}</div>;
   
   return (
     <div className={styles.pageContainer}>
-      <h1 className={styles.header}>My Vehicles</h1>
-      <p className={styles.subHeader}>Track your vehicles and maintenance schedules</p>
-      {vehicles.map(vehicle => <VehicleCard key={vehicle.id} vehicle={vehicle} />)}
+      <div className={styles.headerContainer}>
+        <div>
+          <h1 className={styles.header}>My Vehicles</h1>
+          <p className={styles.subHeader}>Track your vehicles and maintenance schedules</p>
+        </div>
+        <button onClick={() => setIsModalOpen(true)} className={styles.button}>
+          Add Vehicle
+        </button>
+      </div>
+      {vehicles.length === 0 ? (
+        <p>You haven't added any vehicles yet.</p>
+      ) : (
+        <ul>
+          {vehicles.map(vehicle => (
+            <VehicleCard
+              key={vehicle.id}
+              vehicle={vehicle}
+              openMaintenanceModal={(vehicleId) => { // New prop
+                setSelectedVehicleIdForMaintenance(vehicleId);
+                setIsMaintenanceModalOpen(true);
+              }}
+            />
+          ))}
+        </ul>
+      )}
+      <AddVehicleModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onVehicleAdded={handleVehicleAdded}
+      />
+      <AddMaintenanceModal // New modal
+        isOpen={isMaintenanceModalOpen}
+        onClose={() => setIsMaintenanceModalOpen(false)}
+        onMaintenanceAdded={handleMaintenanceAdded}
+        vehicleId={selectedVehicleIdForMaintenance}
+      />
       <Link to="/" className={styles.backButton}>Back to Home</Link>
     </div>
   );
 }
 
 export default VehiclesPage;
-
-{/* Code to try next
-  
-  return (
-    <div>
-      <h1>My Vehicles</h1>
-      
-      {vehicles.length === 0 ? (
-        <p>You haven't added any vehicles yet.</p>
-      ) : (
-        <ul>
-          {vehicles.map((vehicle) => (
-            <li key={vehicle.id}>
-              {vehicle.year} {vehicle.make} {vehicle.model} - VIN: {vehicle.vin}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  ) 
-    
-*/}
-
-
 
 {/* Test Data
 
