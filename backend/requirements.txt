@@ -1,9 +1,13 @@
 aiofiles
+apscheduler
 bcrypt
 fastapi
 passlib
 pydantic
 python-jose
+python-dotenv
+python-jwt
+python-mail
 python-multipart
 sqlalchemy
 uvicorn

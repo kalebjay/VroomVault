@@ -1,7 +1,7 @@
 from db.hashing import Hash
 from .models import DbUser
 from utils.exceptions import user_not_found_exception
-from router.schemas import UserBase
+from router.schemas import UserBase, UserUpdate
 from sqlalchemy.orm.session import Session
 
 
@@ -32,13 +32,17 @@ def get_user_by_username(db: Session, username: str):
 def get_all_users(db: Session):
     return db.query(DbUser).all()
 
-def update_user(id: int, request: UserBase, db: Session):
+def update_user(db: Session, id: int, request: UserUpdate):
     user = db.query(DbUser).filter(DbUser.id == id).first()
     if not user:
         raise user_not_found_exception(id)
-    user.username = request.username
-    user.email = request.email
-    user.password = Hash.bcrypt(request.password)
+    
+    # Update only the fields that are provided in the request
+    if request.username is not None:
+        user.username = request.username
+    if request.email is not None:
+        user.email = request.email
+
     db.commit()
     db.refresh(user)
     return user

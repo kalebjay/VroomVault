@@ -25,6 +25,11 @@ class UserDisplay(BaseModel):
     class Config():
         orm_mode = True
 
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    email: Optional[str] = None
+
+
 # =================== Vehicle Schemas ===================
 
 class VehicleBase(BaseModel):

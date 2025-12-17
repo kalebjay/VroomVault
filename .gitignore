@@ -41,6 +41,7 @@ venv/
 *.sublime-workspace
 
 # Operating System Files
+.eng
 .DS_Store
 Thumbs.db
 Desktop.ini

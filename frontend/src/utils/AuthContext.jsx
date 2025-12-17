@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
       // Decode the token to get user details
       const decodedToken = jwtDecode(token);
       // The 'sub' claim in a JWT typically holds the subject (username in this case)
-      setUser({ loggedIn: true, username: decodedToken.sub, id: decodedToken.id });
+      setUser({ loggedIn: true, username: decodedToken.sub, id: decodedToken.id, email: decodedToken.email });
     }
     setLoading(false);
   }, []);
@@ -33,10 +33,10 @@ export const AuthProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
 
-      const { access_token, user_id, username } = response.data;
+      const { access_token, user_id, username, email } = response.data;
       localStorage.setItem('authToken', access_token);
       apiClient.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
-      setUser({ loggedIn: true, id: user_id, username: username });
+      setUser({ loggedIn: true, id: user_id, username: username, email: email });
     } catch (error) {
       // Clear any stale auth data on login failure
       logout();
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const value = { user, login, logout, loading };
+  const value = { user, setUser, login, logout, loading };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
