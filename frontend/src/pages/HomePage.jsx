@@ -29,13 +29,7 @@ const HomePage = () => {
             <p>Track all your vehicles and their maintenance records in one place.</p>
           </Link>
 
-          <div className={`${styles.featureCard} ${styles.disabledCard}`}>
-            <FaWrench size={40} />
-            <h2>Service Reminders</h2>
-            <p>Get timely reminders for upcoming maintenance. (Coming Soon)</p>
-          </div>
-
-          <Link to="/vehicles" className={styles.featureCard}>
+          <Link to="/profiles" className={styles.featureCard}>
             <FaUser size={40} />
             <h2>Your Profile</h2>
             <p>Manage your account and preferences.</p>

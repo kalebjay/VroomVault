@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import TestPage from './pages/TestPage';
-import MaintenancePage from './pages/MaintenancePage';
+import ProfilesPage from './pages/ProfilesPage';
 import VehiclesPage from './pages/VehiclesPage';  
 
 import { useAuth } from './utils/AuthContext';
@@ -31,7 +31,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/vehicles" element={<ProtectedRoute><VehiclesPage /></ProtectedRoute>} />
-          <Route path="/maintenance" element={<ProtectedRoute><MaintenancePage /></ProtectedRoute>} />
+          <Route path="/profiles" element={<ProtectedRoute><ProfilesPage /></ProtectedRoute>} />
           <Route path="/test" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
         </Routes>
       </div>

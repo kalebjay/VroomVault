@@ -3,20 +3,19 @@ import { Link } from 'react-router-dom';
 import styles from './Pages.module.css';
 
 //
-function MaintenancePage() {
+function ProfilesPage() {
     return (
       <>
-        <h1 className={styles.header}>Maintenance Page</h1>
+        <h1 className={styles.header}>Profile Page</h1>
         <div>
-          <p>Check out the Vehicles</p>
-          <Link to="/vehicles" className={styles.vehiclesButton}>Vehicles</Link>
+          <p>User settings</p>
         </div>
         <Link to="/" className={styles.backButton}>Back to Home</Link>
       </>
     );
 }
 
-export default MaintenancePage;
+export default ProfilesPage;
 
 
 
