@@ -4,6 +4,9 @@ from fastapi.staticfiles import StaticFiles
 from db import models
 from db.database import engine
 from router import user, authentication, maintenance, vehicle
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
+from utils.scheduler import check_upcoming_expirations
 
 # Usage
 # alias uvi  ='uvicorn main:app --reload' (displays on port 8000)
@@ -12,6 +15,17 @@ from router import user, authentication, maintenance, vehicle
 # alias slb ='sqlitebrowser &' (must open DB with ig_api.db file)
 
 app = FastAPI()
+scheduler = AsyncIOScheduler()
+
+@app.on_event("startup")
+async def startup_event():
+    # Schedule job to run every day at a specific time (9:00 AM UTC, 4 AM ET)
+    scheduler.add_job(check_upcoming_expirations, CronTrigger(hour=9, minute=0, second=0))
+    scheduler.start()
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    scheduler.shutdown()
 
 # Create a master router for the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -20,11 +34,6 @@ api_router.include_router(authentication.router)
 api_router.include_router(user.router)
 api_router.include_router(vehicle.router)
 api_router.include_router(maintenance.router)
-
-
-#@app.get("/")
-#def root():
-#    return "Yo sup foo"
 
 
 app.include_router(api_router)
