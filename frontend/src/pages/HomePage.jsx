@@ -1,31 +1,51 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../utils/AuthContext';
+import { FaCar, FaWrench, FaUser } from 'react-icons/fa';
 import styles from './Pages.module.css';
+import { useAuth } from '../utils/AuthContext';
 
 const HomePage = () => {
   const { user, logout } = useAuth();
 
   return (
     <div className={styles.pageContainer}>
-      {user?.loggedIn ? (
-        // Content for logged-in users
-        <div>
-          <h1 className={styles.title}>Welcome back, {user.username}!</h1>
-          <p>Manage your vehicles and maintenance records with ease.</p>
-          <div className={styles.buttonGroup}>
-            <Link to="/vehicles" className={styles.button}>My Vehicles</Link>
-            <button onClick={logout} className={`${styles.button} ${styles.logoutButton}`}>Logout</button>
+      <header className={styles.hero}>
+        <h1 className={styles.heroTitle}>Welcome to VroomVault</h1>
+        <p className={styles.heroSubtitle}>Your digital garage for total vehicle care. Never miss a service again.</p>
+        {user?.loggedIn ? (
+          <div className={styles.heroActions}>
+            <button onClick={logout} className={styles.logoutButton}>Logout</button>
           </div>
-        </div>
-      ) : (
-        // Content for logged-out (guest) users
-        <div>
-          <h1 className={styles.title}>Welcome to VroomVault</h1>
-          <p>Your personal garage in the cloud. Log in to manage your vehicles.</p>
-          <Link to="/login" className={styles.button}>Login / Register</Link>
-        </div>
+        ) : (
+          <Link to="/login" className={styles.ctaButton}>Get Started</Link>
+        )}
+      </header>
+
+      {user?.loggedIn && (
+        <section className={styles.featuresGrid}>
+          <Link to="/vehicles" className={styles.featureCard}>
+            <FaCar size={40} />
+            <h2>My Vehicles</h2>
+            <p>Track all your vehicles and their maintenance records in one place.</p>
+          </Link>
+
+          <div className={`${styles.featureCard} ${styles.disabledCard}`}>
+            <FaWrench size={40} />
+            <h2>Service Reminders</h2>
+            <p>Get timely reminders for upcoming maintenance. (Coming Soon)</p>
+          </div>
+
+          <Link to="/vehicles" className={styles.featureCard}>
+            <FaUser size={40} />
+            <h2>Your Profile</h2>
+            <p>Manage your account and preferences.</p>
+          </Link>
+        </section>
       )}
+
+      <footer className={styles.homeFooter}>
+        <p>&copy; {new Date().getFullYear()} VroomVault. All rights reserved.</p>
+      </footer>
     </div>
   );
 };

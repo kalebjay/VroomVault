@@ -58,8 +58,8 @@ const LoginPage = () => {
   
   return (
     <div className={styles.pageContainer}>
-      <h2 className={styles.title}>{isLoginMode ? 'Login' : 'Create Account'}</h2>
-      <form onSubmit={handleSubmit}>
+      <h1 className={styles.title}>{isLoginMode ? 'Login' : 'Create Account'}</h1>
+      <form onSubmit={handleSubmit} className={styles.loginForm}>
         <div className={styles.formGroup}>
           <label htmlFor="username">Username:</label>
           <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required/>

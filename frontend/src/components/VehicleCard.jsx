@@ -22,8 +22,8 @@ function VehicleCard({ vehicle, openMaintenanceModal, onEditMaintenance, onEditV
             <h2 className={styles.vehicleName}>{`${vehicle.year} ${vehicle.make} ${vehicle.model}`}</h2>
             <p className={styles.vehicleDetails}>{`${vehicle.color} • ${vehicle.license_plate}`}</p>
             <div className={styles.vehicleSubDetails}>
-              <span>Reg. Exp: {formatDate(vehicle.exp_registration)}</span>
-              <span>Safety Exp: {formatDate(vehicle.exp_safety)}</span>
+              <div>Registration Exp: {formatDate(vehicle.exp_registration)}</div>
+              <div>Safety Exp: {formatDate(vehicle.exp_safety)}</div>
             </div>
           </div>
         </div>
