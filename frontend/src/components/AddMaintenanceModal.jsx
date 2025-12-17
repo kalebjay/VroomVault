@@ -15,6 +15,8 @@ const AddMaintenanceModal = ({ isOpen, onClose, onMaintenanceAdded, onMaintenanc
     filter_part_number: '',
     tire_type: '',
     tire_part_number: '',
+    brake_type: '',
+    brake_part_number: '',
   });
   const [maintenanceData, setMaintenanceData] = useState(getInitialState());
   const [error, setError] = useState('');
@@ -61,9 +63,15 @@ const AddMaintenanceModal = ({ isOpen, onClose, onMaintenanceAdded, onMaintenanc
     if (maintenanceData.type === 'oil_change') {
       finalPayload.oil_type = maintenanceData.oil_type;
       finalPayload.filter_part_number = maintenanceData.filter_part_number;
+    } else if (maintenanceData.type === 'tire_rotation') {
+      finalPayload.tire_type = maintenanceData.tire_type;
+      finalPayload.tire_part_number = maintenanceData.tire_part_number;
     } else if (maintenanceData.type === 'tire_change') {
       finalPayload.tire_type = maintenanceData.tire_type;
       finalPayload.tire_part_number = maintenanceData.tire_part_number;
+    } else if (maintenanceData.type === 'brake_change') {
+      finalPayload.brake_type = maintenanceData.brake_type;
+      finalPayload.brake_part_number = maintenanceData.brake_part_number;
     }
 
     try {
@@ -95,9 +103,11 @@ const AddMaintenanceModal = ({ isOpen, onClose, onMaintenanceAdded, onMaintenanc
         <form onSubmit={handleSubmit}>
           <div className={styles.formGrid}>
             <select name="type" value={maintenanceData.type} onChange={handleChange}>
+              {/* Add other types as created in backend */}
               <option value="oil_change">Oil Change</option>
+              <option value="tire_rotation">Tire Rotation</option>
               <option value="tire_change">Tire Change</option>
-              {/* Add other types as you create them in the backend */}
+              <option value="brake_change">Brake Change</option>
             </select>
             <input name="date" type="date" value={maintenanceData.date} onChange={handleChange} required />
             <input name="mileage" type="number" value={maintenanceData.mileage} onChange={handleChange} placeholder="Mileage" required />
@@ -110,11 +120,25 @@ const AddMaintenanceModal = ({ isOpen, onClose, onMaintenanceAdded, onMaintenanc
                 <input name="filter_part_number" value={maintenanceData.filter_part_number} onChange={handleChange} placeholder="Filter Part #" required />
               </>
             )}
+            
+            {maintenanceData.type === 'tire_rotation' && (
+              <>
+                <input name="tire_type" value={maintenanceData.tire_type} onChange={handleChange} placeholder="Tire Type (e.g., All-Season)" required />
+                <input name="tire_part_number" value={maintenanceData.tire_part_number} onChange={handleChange} placeholder="Tire Part #" required />
+              </>
+            )}
 
             {maintenanceData.type === 'tire_change' && (
               <>
                 <input name="tire_type" value={maintenanceData.tire_type} onChange={handleChange} placeholder="Tire Type (e.g., All-Season)" required />
                 <input name="tire_part_number" value={maintenanceData.tire_part_number} onChange={handleChange} placeholder="Tire Part #" required />
+              </>
+            )}
+
+            {maintenanceData.type === 'brake_change' && (
+              <>
+                <input name="brake_type" value={maintenanceData.brake_type} onChange={handleChange} placeholder="Brake Type/Brand" required />
+                <input name="brake_part_number" value={maintenanceData.brake_part_number} onChange={handleChange} placeholder="Brake Part #" required />
               </>
             )}
           </div>

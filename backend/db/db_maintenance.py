@@ -11,8 +11,12 @@ def create_maintenance_record(db: Session, request: AnyMaintenanceRecordCreate, 
 
     if record_type == "oil_change":
         new_record = models.OilChangeRecord(**record_data, vehicle_id=vehicle_id)
+    elif record_type == "tire_rotation":
+        new_record = models.TireRotationRecord(**record_data, vehicle_id=vehicle_id)
     elif record_type == "tire_change":
         new_record = models.TireChangeRecord(**record_data, vehicle_id=vehicle_id)
+    elif record_type == "brake_change":
+        new_record = models.BrakeChangeRecord(**record_data, vehicle_id=vehicle_id)
     else:
         raise bad_request_exception(detail=f"Invalid maintenance type: {record_type}")
 
