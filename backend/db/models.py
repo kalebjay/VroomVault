@@ -54,9 +54,23 @@ class OilChangeRecord(MaintenanceRecord):
     filter_part_number = Column(String)
     __mapper_args__ = {"polymorphic_identity": "oil_change",}
 
+class TireRotationRecord(MaintenanceRecord):
+    __tablename__ = "tire_rotation_records"
+    id = Column(Integer, ForeignKey("maintenance_records.id"), primary_key=True)
+    tire_type = Column(String)
+    tire_part_number = Column(String)
+    __mapper_args__ = {"polymorphic_identity": "tire_rotation",}
+
 class TireChangeRecord(MaintenanceRecord):
     __tablename__ = "tire_change_records"
     id = Column(Integer, ForeignKey("maintenance_records.id"), primary_key=True)
     tire_type = Column(String)
     tire_part_number = Column(String)
     __mapper_args__ = {"polymorphic_identity": "tire_change",}
+
+class BrakeChangeRecord(MaintenanceRecord):
+    __tablename__ = "brake_change_records"
+    id = Column(Integer, ForeignKey("maintenance_records.id"), primary_key=True)
+    brake_type = Column(String)
+    brake_part_number = Column(String)
+    __mapper_args__ = {"polymorphic_identity": "brake_change",}

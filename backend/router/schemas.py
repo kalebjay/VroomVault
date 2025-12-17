@@ -62,6 +62,17 @@ class OilChangeRecordDisplay(MaintenanceRecordDisplay):
     class Config():
         orm_mode = True
 
+class TireRotationRecordCreate(MaintenanceRecordBase):
+    type: Literal["tire_rotation"] = "tire_rotation"
+    tire_type: str
+    tire_part_number: str
+
+class TireRotationRecordDisplay(MaintenanceRecordDisplay):
+    tire_type: str
+    tire_part_number: str
+    class Config():
+        orm_mode = True
+
 class TireChangeRecordCreate(MaintenanceRecordBase):
     type: Literal["tire_change"] = "tire_change"
     tire_type: str
@@ -73,9 +84,20 @@ class TireChangeRecordDisplay(MaintenanceRecordDisplay):
     class Config():
         orm_mode = True
 
+class BrakeChangeRecordCreate(MaintenanceRecordBase):
+    type: Literal["brake_change"] = "brake_change"
+    brake_type: str
+    brake_part_number: str
+
+class BrakeChangeRecordDisplay(MaintenanceRecordDisplay):
+    brake_type: str
+    brake_part_number: str
+    class Config():
+        orm_mode = True
+
 # A Union to handle different maintenance types in request bodies and responses
-AnyMaintenanceRecordCreate = Union[OilChangeRecordCreate, TireChangeRecordCreate]
-AnyMaintenanceRecordDisplay = Union[OilChangeRecordDisplay, TireChangeRecordDisplay]
+AnyMaintenanceRecordCreate = Union[OilChangeRecordCreate, TireRotationRecordCreate, TireChangeRecordCreate, BrakeChangeRecordCreate]
+AnyMaintenanceRecordDisplay = Union[OilChangeRecordDisplay, TireRotationRecordDisplay, TireChangeRecordDisplay, BrakeChangeRecordDisplay]
 
 # =================== Updated VehicleDisplay Schema ===================
 

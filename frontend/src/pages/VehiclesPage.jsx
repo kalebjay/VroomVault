@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import styles from './Pages.module.css';
 import VehicleCard from '../components/VehicleCard';
 import AddVehicleModal from '../components/AddVehicleModal';
-import AddMaintenanceModal from '../components/AddMaintenanceModal'; // New import
+import AddMaintenanceModal from '../components/AddMaintenanceModal';
 
 
 const VehiclesPage = () => {
@@ -15,8 +15,8 @@ const VehiclesPage = () => {
   const [modalState, setModalState] = useState({
     addVehicle: false,
     addMaintenance: false,
-    editVehicle: null, // Will hold the vehicle object to edit
-    editMaintenance: null, // Will hold the { vehicleId, record } object
+    editVehicle: null,
+    editMaintenance: null,
     selectedVehicleId: null,
   });
 
@@ -50,7 +50,7 @@ const VehiclesPage = () => {
     setModalState({ ...modalState, editVehicle: null });
   };
 
-  // New handler for adding maintenance items
+  // Handler for adding maintenance items
   const handleMaintenanceAdded = (vehicleId, newMaintenanceItem) => {
     setActionError('');
     setVehicles(prevVehicles =>
@@ -164,7 +164,7 @@ const VehiclesPage = () => {
         onVehicleUpdated={handleVehicleUpdated}
         vehicleToEdit={modalState.editVehicle}
       />
-      <AddMaintenanceModal // New modal
+      <AddMaintenanceModal
         isOpen={modalState.addMaintenance || !!modalState.editMaintenance}
         onClose={() => setModalState({ ...modalState, addMaintenance: false, editMaintenance: null })}
         onMaintenanceAdded={handleMaintenanceAdded}
@@ -178,64 +178,3 @@ const VehiclesPage = () => {
 }
 
 export default VehiclesPage;
-
-{/* Test Data
-
-  const vehicles = [
-    {
-      id: 1,
-      year: 2020,
-      make: 'Toyota',
-      model: 'Highlander',
-      vin: '123XYZ',
-      license_plate: 'ABC-1234',
-      color: 'Magnetic Gray',
-      exp_registration: '2025-08-31T00:00:00',
-      exp_safety: '2025-08-31T00:00:00',
-      maintenanceItems: [
-        {
-          id: 1,
-          name: 'Vehicle Registration',
-          status: 'Overdue',
-          dueDate: '6/29/2025',
-        },
-        {
-          id: 2,
-          name: 'Oil Change',
-          status: 'Due Soon',
-          dueDate: '12/14/2025',
-          lastService: '9/14/2024',
-          interval: 'Every 6 months or 5,000 miles',
-        },
-      ],
-    },
-    {
-      id: 1,
-      year: 2002, // Corrected typo from 'Chrylser'
-      make: 'Chrysler',
-      model: 'Sebring',
-      vin: '456ABC',
-      license_plate: 'ZKELF',
-      color: 'White',
-      exp_registration: '2026-06-29T00:00:00',
-      maintenanceItems: [
-        {
-          id: 1,
-          name: 'Vehicle Registration',
-          status: 'Due',
-          dueDate: '6/29/2026',
-        },
-        {
-          id: 2,
-          name: 'Oil Change',
-          status: 'Due Soon',
-          dueDate: '12/14/2025',
-          lastService: '9/14/2024',
-          interval: 'Every 3 months or 3,000 miles',
-        },
-      ],
-    },
-  ];
-  
-  
-  */}

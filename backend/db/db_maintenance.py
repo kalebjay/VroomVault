@@ -32,7 +32,6 @@ def get_record_by_id(db: Session, record_id: int):
     return record
 
 def update_maintenance_record(db: Session, record: models.MaintenanceRecord, request: AnyMaintenanceRecordCreate):
-    # Update fields from the request
     for key, value in request.dict(exclude_unset=True).items():
         setattr(record, key, value)
     db.commit()

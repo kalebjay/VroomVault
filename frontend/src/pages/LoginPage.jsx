@@ -10,7 +10,7 @@ const LoginPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [email, setEmail] = useState(''); // For registration
+  const [email, setEmail] = useState(''); // For registration only
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login, user } = useAuth();
