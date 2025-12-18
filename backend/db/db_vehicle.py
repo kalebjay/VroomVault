@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from .models import DbUser, DbVehicle
 from router.schemas import VehicleBase, UserAuth
 from utils.exceptions import not_found_exception
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 
 def create_vehicle(db: Session, request: VehicleBase, user: UserAuth):
@@ -24,14 +24,23 @@ def create_vehicle(db: Session, request: VehicleBase, user: UserAuth):
     return new_vehicle
 
 def get_vehicle_by_id(db: Session, id: int):
-    vehicle = db.query(DbVehicle).filter(DbVehicle.id == id).first()
+    vehicle = (
+        db.query(DbVehicle)
+        .options(selectinload(DbVehicle.maint_records))
+        .filter(DbVehicle.id == id)
+        .first()
+    )
     if not vehicle:
         raise not_found_exception("Vehicle", id)
     return vehicle
 
 # get all vehicles per user
 def get_all_vehicles_per_user(db: Session, current_user: UserAuth):
-    vehicles = db.query(DbVehicle).filter(DbVehicle.owner_id == current_user.id).all()
+    vehicles = (
+        db.query(DbVehicle)
+        .options(selectinload(DbVehicle.maint_records))
+        .filter(DbVehicle.owner_id == current_user.id).all()
+    )
     return vehicles
 
 # update vehicle

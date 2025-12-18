@@ -69,8 +69,7 @@ def get_expiring_vehicles_from_db():
 
             # 2. Check for past-due reminders
             if user.notification_frequency != 'never':
-                # This logic can be improved to be more precise (e.g., check last notification date)
-                # For now, we simplify: daily runs every day, weekly on Sundays, monthly on the 1st.
+                # daily runs every day, weekly on Sundays, monthly on the 1st.
                 is_weekly_day = (now.weekday() == 6) # Sunday
                 is_monthly_day = (now.day == 1)
 

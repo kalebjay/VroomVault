@@ -1,11 +1,19 @@
 from db.hashing import Hash
 from .models import DbUser
-from utils.exceptions import user_not_found_exception
+from utils.exceptions import user_not_found_exception, bad_request_exception
 from router.schemas import UserBase, UserUpdate
 from sqlalchemy.orm.session import Session
 
 
 def create_user(db: Session, request: UserBase):
+    # Check for existing username
+    if db.query(DbUser).filter(DbUser.username == request.username).first():
+        raise bad_request_exception(detail=f"Username '{request.username}' is already taken.")
+
+    # Check for existing email
+    if db.query(DbUser).filter(DbUser.email == request.email).first():
+        raise bad_request_exception(detail=f"Email '{request.email}' is already registered.")
+
     new_user = DbUser(
         username = request.username,
         email = request.email,
@@ -38,6 +46,16 @@ def update_user(id: int, db: Session, request: UserUpdate):
         raise user_not_found_exception(id)
     # Create a dictionary of the request data, excluding any fields that were not set
     update_data = request.dict(exclude_unset=True)
+
+    # Check for username/email conflicts if they are being updated
+    if "username" in update_data and update_data["username"] != user.username:
+        if db.query(DbUser).filter(DbUser.username == update_data["username"]).first():
+            raise bad_request_exception(detail=f"Username '{update_data['username']}' is already taken.")
+
+    if "email" in update_data and update_data["email"] != user.email:
+        if db.query(DbUser).filter(DbUser.email == update_data["email"]).first():
+            raise bad_request_exception(detail=f"Email '{update_data['email']}' is already registered.")
+
     # Iterate over the provided data and update the user object
     for key, value in update_data.items():
         setattr(user, key, value)
@@ -51,4 +69,4 @@ def delete_user(id: int, db: Session):
         raise user_not_found_exception(id)
     db.delete(user)
     db.commit()
-    return 'User deleted successfully'
+    return

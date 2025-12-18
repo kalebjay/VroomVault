@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from . import models
 from router.schemas import AnyMaintenanceRecordCreate
 from utils.exceptions import not_found_exception, bad_request_exception
@@ -30,7 +30,12 @@ def get_all_records_for_vehicle(db: Session, vehicle_id: int):
     return records
 
 def get_record_by_id(db: Session, record_id: int):
-    record = db.query(models.MaintenanceRecord).filter(models.MaintenanceRecord.id == record_id).first()
+    record = (
+        db.query(models.MaintenanceRecord)
+        .options(joinedload(models.MaintenanceRecord.vehicle))
+        .filter(models.MaintenanceRecord.id == record_id)
+        .first()
+    )
     if not record:
         raise not_found_exception("Maintenance Record", record_id)
     return record

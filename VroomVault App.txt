@@ -25,7 +25,8 @@ Settings page
   - theme of site
   - tick for each item of desired notification
 
-TODO list
+
+
 - fully test API on swagger page for data 
 - connect backend and frontend
 - add safety as maintenance item (registration already in)
@@ -33,6 +34,10 @@ TODO list
 - enhance homepage
 - create settings page
 - complete user login logic
+
+TODO list
+-
+-
 
 Later
 -
