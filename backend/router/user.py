@@ -37,7 +37,7 @@ def updateUser(id: int, request: UserUpdate, db: Session = Depends(get_db), curr
     # Ensure the logged-in user is only updating their own profile
     if current_user.id != id:
         raise forbidden_exception(detail="Not authorized to update this user")
-    return update_user(db, id, request)
+    return update_user(id, db, request)
 
 # delete user
 @router.delete('/{id}')

@@ -20,6 +20,8 @@ class UserAuth(BaseModel):
     email: str
     notification_days_advance: int
     notification_frequency: str
+    class Config():
+        orm_mode = True
 
 class UserDisplay(BaseModel):
     username: str
@@ -47,6 +49,8 @@ class VehicleBase(BaseModel):
     color: Optional[str] = None
     exp_registration: Optional[datetime] = None
     exp_safety: Optional[datetime] = None
+    class Config():
+        orm_mode = True
 
 # =================== Maintenance Record Schemas ===================
 
@@ -55,6 +59,8 @@ class MaintenanceRecordBase(BaseModel):
     mileage: int
     cost: float
     description: str
+    class Config():
+        orm_mode = True
 
 class MaintenanceRecordDisplay(MaintenanceRecordBase):
     id: int

@@ -24,11 +24,21 @@ def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(
     if not Hash.verify(user.password, request.password):
         raise credentials_exception(detail='Incorrect password')
     
-    access_token = create_access_token(data={'sub': user.username, 'id': user.id})
+    token_data = {
+        'sub': user.username,
+        'id': user.id,
+        'email': user.email,
+        'notification_days_advance': user.notification_days_advance,
+        'notification_frequency': user.notification_frequency
+    }
+    access_token = create_access_token(data=token_data)
 
     return {
         'access_token': access_token,
         'token_type': 'Bearer',
         'user_id': user.id,
-        'username': user.username
+        'username': user.username,
+        'email': user.email,
+        'notification_days_advance': user.notification_days_advance,
+        'notification_frequency': user.notification_frequency
     }

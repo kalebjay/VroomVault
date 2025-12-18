@@ -17,7 +17,14 @@ export const AuthProvider = ({ children }) => {
       // Decode the token to get user details
       const decodedToken = jwtDecode(token);
       // The 'sub' claim in a JWT typically holds the subject (username in this case)
-      setUser({ loggedIn: true, username: decodedToken.sub, id: decodedToken.id, email: decodedToken.email });
+      setUser({
+        loggedIn: true,
+        username: decodedToken.sub,
+        id: decodedToken.id,
+        email: decodedToken.email,
+        notification_days_advance: decodedToken.notification_days_advance,
+        notification_frequency: decodedToken.notification_frequency
+      });
     }
     setLoading(false);
   }, []);
@@ -33,10 +40,17 @@ export const AuthProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
 
-      const { access_token, user_id, username, email } = response.data;
+      const { access_token, user_id, username, email, notification_days_advance, notification_frequency } = response.data;
       localStorage.setItem('authToken', access_token);
       apiClient.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
-      setUser({ loggedIn: true, id: user_id, username: username, email: email });
+      setUser({
+        loggedIn: true,
+        id: user_id,
+        username: username,
+        email: email,
+        notification_days_advance: notification_days_advance,
+        notification_frequency: notification_frequency
+      });
     } catch (error) {
       // Clear any stale auth data on login failure
       logout();

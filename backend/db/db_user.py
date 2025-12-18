@@ -32,21 +32,15 @@ def get_user_by_username(db: Session, username: str):
 def get_all_users(db: Session):
     return db.query(DbUser).all()
 
-def update_user(db: Session, id: int, request: UserUpdate):
+def update_user(id: int, db: Session, request: UserUpdate):
     user = db.query(DbUser).filter(DbUser.id == id).first()
     if not user:
         raise user_not_found_exception(id)
-    
-    # Update only the fields that are provided in the request
-    if request.username is not None:
-        user.username = request.username
-    if request.email is not None:
-        user.email = request.email
-    if request.notification_days_advance is not None:
-        user.notification_days_advance = request.notification_days_advance
-    if request.notification_frequency is not None:
-        user.notification_frequency = request.notification_frequency
-
+    # Create a dictionary of the request data, excluding any fields that were not set
+    update_data = request.dict(exclude_unset=True)
+    # Iterate over the provided data and update the user object
+    for key, value in update_data.items():
+        setattr(user, key, value)
     db.commit()
     db.refresh(user)
     return user

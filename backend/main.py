@@ -20,8 +20,9 @@ scheduler = AsyncIOScheduler()
 @app.on_event("startup")
 async def startup_event():
     # Schedule job to run every day at a specific time (9:00 AM UTC, 4 AM ET)
-    #scheduler.add_job(check_upcoming_expirations, CronTrigger(hour=9, minute=0, second=0))
-    scheduler.add_job(check_upcoming_expirations, CronTrigger(second=1))
+    scheduler.add_job(check_upcoming_expirations, CronTrigger(hour=9, minute=0, second=0))
+    # For testing, '*/5' syntax means "every 5th second".
+    # scheduler.add_job(check_upcoming_expirations, CronTrigger(second='*/5'))
     scheduler.start()
 
 @app.on_event("shutdown")
