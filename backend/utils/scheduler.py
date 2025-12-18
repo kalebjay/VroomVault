@@ -66,7 +66,7 @@ def get_expiring_vehicles_from_db():
                     body += f"<p>- Safety inspection expires on: {vehicle.exp_safety.strftime('%Y-%m-%d')}</p>"
                 body += "<p>Please take the necessary actions soon.</p><p>Thanks,<br>The VroomVault Team</p>"
                 notifications.append({'recipient_email': user.email, 'subject': subject, 'body': body})
-
+        """
             # 2. Check for past-due reminders
             if user.notification_frequency != 'never':
                 # daily runs every day, weekly on Sundays, monthly on the 1st.
@@ -76,12 +76,23 @@ def get_expiring_vehicles_from_db():
                 if user.notification_frequency == 'daily' or \
                    (user.notification_frequency == 'weekly' and is_weekly_day) or \
                    (user.notification_frequency == 'monthly' and is_monthly_day):
-                    
-                    # This part is left as a suggestion as it requires more logic
-                    # to avoid spamming users. You would query for past-due vehicles
-                    # and check when the last notification was sent.
-                    pass
 
+                    past_due_vehicles = db.query(DbVehicle).filter(
+                        DbVehicle.owner_id == user.id,
+                        (DbVehicle.exp_registration < now) |
+                        (DbVehicle.exp_safety < now)
+                    ).all()
+
+                    for vehicle in past_due_vehicles:
+                        subject = f"ACTION REQUIRED: Expired Item for Your {vehicle.make} {vehicle.model}"
+                        body = f"<p>Hi {user.username},</p><p>This is a reminder that your {vehicle.year} {vehicle.make} {vehicle.model} has an item that is past-due:</p>"
+                        if vehicle.exp_registration and vehicle.exp_registration < now:
+                            body += f"<p>- <strong>Registration expired on: {vehicle.exp_registration.strftime('%Y-%m-%d')}</strong></p>"
+                        if vehicle.exp_safety and vehicle.exp_safety < now:
+                            body += f"<p>- <strong>Safety inspection expired on: {vehicle.exp_safety.strftime('%Y-%m-%d')}</strong></p>"
+                        body += "<p>Please take action immediately.</p><p>Thanks,<br>The VroomVault Team</p>"
+                        notifications.append({'recipient_email': user.email, 'subject': subject, 'body': body})
+        """
         return notifications
     finally:
         db.close()

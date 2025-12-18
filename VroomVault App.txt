@@ -26,7 +26,7 @@ Settings page
   - tick for each item of desired notification
 
 
-
+Completed
 - fully test API on swagger page for data 
 - connect backend and frontend
 - add safety as maintenance item (registration already in)
@@ -36,9 +36,13 @@ Settings page
 - complete user login logic
 
 TODO list
--
--
+- test expired notifications more, fully implement
+- add more maintenance items
+- prepare further for deployment 
+  - separate repos
+  - ensure env vars are secure/setup
 
 Later
--
-- 
+- add insurance data
+- capability to lookup common items due on a specific vehicle type
+  and suggest maintenance items or warn of recall items
