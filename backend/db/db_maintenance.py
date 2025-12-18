@@ -48,7 +48,9 @@ def update_maintenance_record(db: Session, record: models.MaintenanceRecord, req
     return record
 
 def delete_maintenance_record(db: Session, record_id: int):
-    record = get_record_by_id(db, record_id)
+    record = db.query(models.MaintenanceRecord).filter(models.MaintenanceRecord.id == record_id).first()
+    if not record:
+        raise not_found_exception("Maintenance Record", record_id)
     db.delete(record)
     db.commit()
     return

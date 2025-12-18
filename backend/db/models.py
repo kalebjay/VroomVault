@@ -30,7 +30,6 @@ class DbVehicle(Base):
  
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("DbUser", back_populates="vehicles")
-    # Relationship to completed maintenance records
     maint_records = relationship("MaintenanceRecord", back_populates="vehicle")
 
 class MaintenanceRecord(Base):
@@ -42,7 +41,6 @@ class MaintenanceRecord(Base):
     description = Column(String)
     vehicle_id = Column(Integer, ForeignKey("vehicles.id"))
     vehicle = relationship("DbVehicle", back_populates="maint_records")
-    # --- Inheritance settings ---
     type = Column(String(50))
     __mapper_args__ = {
         "polymorphic_identity": "maintenance_record",
