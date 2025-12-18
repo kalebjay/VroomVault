@@ -60,4 +60,5 @@ coverage.xml
 # Misc
 *.log
 *.sqlite3
+*.db
 instance/

@@ -42,6 +42,10 @@ def update_user(db: Session, id: int, request: UserUpdate):
         user.username = request.username
     if request.email is not None:
         user.email = request.email
+    if request.notification_days_advance is not None:
+        user.notification_days_advance = request.notification_days_advance
+    if request.notification_frequency is not None:
+        user.notification_frequency = request.notification_frequency
 
     db.commit()
     db.refresh(user)

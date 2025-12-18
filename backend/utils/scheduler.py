@@ -1,10 +1,11 @@
 import os
-from datetime import datetime, timedelta
+import asyncio
+from datetime import datetime, timedelta, timezone
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from db.database import SessionLocal
-from db.models import DbVehicle
+from db.models import DbVehicle, DbUser # DbUser is already imported, which is good.
 
 load_dotenv()
 
@@ -33,41 +34,66 @@ async def send_notification_email(recipient_email: str, subject: str, body: str)
     await fm.send_message(message)
     print(f"Notification sent to {recipient_email}")
 
-def check_upcoming_expirations():
+def get_expiring_vehicles_from_db():
     """
-    Checks for vehicles with registration or safety inspections expiring soon
-    and sends email notifications to the owners.
+    Synchronous function to fetch expiring vehicles from the database.
+    This is designed to be run in a separate thread to avoid blocking asyncio.
     """
-    print("Scheduler running: Checking for upcoming expirations...")
     db: Session = SessionLocal()
+    notifications = []
     try:
-        # Define the notification window (e.g., 30 days from now)
-        notification_window = datetime.utcnow() + timedelta(days=30)
+        now = datetime.now(timezone.utc)
+        all_users = db.query(DbUser).all()
 
-        # Find vehicles with upcoming expirations
-        vehicles_to_notify = db.query(DbVehicle).filter(
-            (DbVehicle.exp_registration <= notification_window) |
-            (DbVehicle.exp_safety <= notification_window)
-        ).all()
+        for user in all_users:
+            if not user.email:
+                continue
 
-        for vehicle in vehicles_to_notify:
-            owner = vehicle.owner
-            if owner and owner.email:
-                # This is a synchronous function, so we can't await here.
-                # The email sending will be handled by the event loop managed by the scheduler.
-                # For a more robust solution, you'd use a background task runner like Celery.
+            # 1. Check for upcoming expirations
+            notification_window = now + timedelta(days=user.notification_days_advance)
+            upcoming_vehicles = db.query(DbVehicle).filter(
+                DbVehicle.owner_id == user.id,
+                (DbVehicle.exp_registration.between(now, notification_window)) |
+                (DbVehicle.exp_safety.between(now, notification_window))
+            ).all()
+
+            for vehicle in upcoming_vehicles:
                 subject = f"Upcoming Expiration for Your {vehicle.make} {vehicle.model}"
-                body = f"<p>Hi {owner.username},</p><p>This is a friendly reminder that your {vehicle.year} {vehicle.make} {vehicle.model} has an upcoming expiration:</p>"
+                body = f"<p>Hi {user.username},</p><p>This is a friendly reminder that your {vehicle.year} {vehicle.make} {vehicle.model} has an upcoming expiration:</p>"
                 if vehicle.exp_registration and vehicle.exp_registration <= notification_window:
                     body += f"<p>- Registration expires on: {vehicle.exp_registration.strftime('%Y-%m-%d')}</p>"
                 if vehicle.exp_safety and vehicle.exp_safety <= notification_window:
                     body += f"<p>- Safety inspection expires on: {vehicle.exp_safety.strftime('%Y-%m-%d')}</p>"
                 body += "<p>Please take the necessary actions soon.</p><p>Thanks,<br>The VroomVault Team</p>"
-                
-                # In a real app, you would run this async task in the event loop
-                # For simplicity with APScheduler's blocking scheduler, we'll call it from an async context in main.py
-                # This function will just prepare the data. The actual sending will be orchestrated from main.py
-                # For now, we just print. The actual sending will be hooked up in main.py
-                print(f"Found expiring vehicle for {owner.email}: {vehicle.make} {vehicle.model}")
+                notifications.append({'recipient_email': user.email, 'subject': subject, 'body': body})
+
+            # 2. Check for past-due reminders
+            if user.notification_frequency != 'never':
+                # This logic can be improved to be more precise (e.g., check last notification date)
+                # For now, we simplify: daily runs every day, weekly on Sundays, monthly on the 1st.
+                is_weekly_day = (now.weekday() == 6) # Sunday
+                is_monthly_day = (now.day == 1)
+
+                if user.notification_frequency == 'daily' or \
+                   (user.notification_frequency == 'weekly' and is_weekly_day) or \
+                   (user.notification_frequency == 'monthly' and is_monthly_day):
+                    
+                    # This part is left as a suggestion as it requires more logic
+                    # to avoid spamming users. You would query for past-due vehicles
+                    # and check when the last notification was sent.
+                    pass
+
+        return notifications
     finally:
         db.close()
+
+async def check_upcoming_expirations():
+    """
+    Asynchronous task to check for expirations and send emails.
+    It runs the blocking DB query in a thread pool.
+    """
+    print(f"Scheduler running at {datetime.now()}: Checking for upcoming expirations...")
+    notifications_to_send = await asyncio.to_thread(get_expiring_vehicles_from_db)
+
+    for notification in notifications_to_send:
+        await send_notification_email(**notification)

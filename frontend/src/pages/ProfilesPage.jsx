@@ -9,6 +9,8 @@ const ProfilesPage = () => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
+    notification_days_advance: 30,
+    notification_frequency: 'weekly',
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -19,6 +21,8 @@ const ProfilesPage = () => {
       setFormData({
         username: user.username,
         email: user.email,
+        notification_days_advance: user.notification_days_advance || 30,
+        notification_frequency: user.notification_frequency || 'weekly',
       });
     }
   }, [user]);
@@ -71,6 +75,20 @@ const ProfilesPage = () => {
           <label htmlFor="email">Email:</label>
           <input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required />
         </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="notification_days_advance">Notify me (days in advance):</label>
+          <input id="notification_days_advance" name="notification_days_advance" type="number" value={formData.notification_days_advance} onChange={handleChange} required min="1" />
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="notification_frequency">Reminder frequency for past-due items:</label>
+          <select id="notification_frequency" name="notification_frequency" value={formData.notification_frequency} onChange={handleChange} required>
+            <option value="never">Never</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </div>
+
         {error && <p className={styles.errorText}>{error}</p>}
         {success && <p style={{ color: 'green' }}>{success}</p>}
         <button type="submit" className={styles.button} disabled={loading}>

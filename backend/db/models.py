@@ -10,6 +10,8 @@ class DbUser(Base):
     username = Column(String)
     email = Column(String)
     password = Column(String)
+    notification_days_advance = Column(Integer, default=30, nullable=False)
+    notification_frequency = Column(String, default='weekly', nullable=False)
     vehicles = relationship("DbVehicle", back_populates="owner")
 
 

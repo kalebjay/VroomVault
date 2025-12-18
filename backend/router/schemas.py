@@ -18,16 +18,22 @@ class UserAuth(BaseModel):
     id: int
     username: str
     email: str
+    notification_days_advance: int
+    notification_frequency: str
 
 class UserDisplay(BaseModel):
     username: str
     email: str
+    notification_days_advance: int
+    notification_frequency: str
     class Config():
         orm_mode = True
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None
     email: Optional[str] = None
+    notification_days_advance: Optional[int] = None
+    notification_frequency: Optional[str] = None
 
 
 # =================== Vehicle Schemas ===================
