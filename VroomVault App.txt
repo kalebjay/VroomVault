@@ -46,3 +46,7 @@ Later
 - add insurance data
 - capability to lookup common items due on a specific vehicle type
   and suggest maintenance items or warn of recall items
+
+
+Run with
+docker-compose up --build -d
