@@ -6,9 +6,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=vroomvault_password
-      - POSTGRES_DB=vroomvault_db
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASS:-vroomvault_password}
+      - POSTGRES_DB=${DB_NAME:-vroomvault_db}
     restart: always
 
   backend:
@@ -18,10 +18,10 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DB_USER=postgres
-      - DB_PASS=vroomvault_password
-      - DB_HOST=db
-      - DB_NAME=vroomvault_db
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASS=${DB_PASS:-vroomvault_password}
+      - DB_HOST=${DB_HOST:-db}
+      - DB_NAME=${DB_NAME:-vroomvault_db}
     depends_on:
       - db
     restart: always
