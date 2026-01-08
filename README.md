@@ -32,7 +32,7 @@ One must have these items to use locally
 - Docker Compose
 - Git
 
-## Usage - Local Development
+## Usage
 
 ### 1. Set up the Repository
 
