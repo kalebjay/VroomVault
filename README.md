@@ -78,15 +78,15 @@ npm run dev
 
 ### Backend Development
 
-- It is strongly recommended to use a virtual envirnment 
+- It is strongly recommended to use a virtual environment 
 - Requirements can be found in VroomVault/backend/requirements.txt
-- Intall all the requirements with this command:
+- Install all the requirements with this command:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Run the appliaction with:
+Run the application with:
 
 ```bash
 cd backend
@@ -105,8 +105,33 @@ SQLite can be used for light usage
 
 PostgreSQL is the recommended database for production
 - see online tutorials for how to set up postgres locally
-- set your database credintials in VroomVault/backend/.env
+- set your database credentials in VroomVault/backend/.env
 - recommend using a db viewer such as pgAdmin to view data
+
+
+### Environment Variables
+
+To run the application, you will need to configure the following environment variables.
+
+**Backend (`backend/.env`):**
+```env
+DATABASE_URL=postgresql://user:password@localhost/dbname
+SECRET_KEY=your_secret_key
+
+# Email Settings (Required for notifications)
+MAIL_USERNAME=your_email@example.com
+MAIL_PASSWORD=your_app_password
+MAIL_FROM=your_email@example.com
+MAIL_PORT=587
+MAIL_SERVER=smtp.gmail.com
+MAIL_STARTTLS=True
+MAIL_SSL_TLS=False
+```
+
+**Frontend (`frontend/.env`):**
+```env
+VITE_API_BASE_URL=http://localhost:8000
+```
 
 
 ## Project Structure
@@ -142,5 +167,3 @@ PostgreSQL is the recommended database for production
 │   ├── vite.config.js
 ├── docker-compose.yml
 └── README.md
-
-
