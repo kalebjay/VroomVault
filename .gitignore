@@ -42,6 +42,7 @@ venv/
 
 # Operating System Files
 .env
+.env.*
 .DS_Store
 Thumbs.db
 Desktop.ini
