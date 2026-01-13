@@ -66,6 +66,20 @@ Stop the application with:
 docker-compose down
 ```
 
+Note - if you get a permission denied problem during the build, it's likely 
+because your docker user account does not have permission to access the 
+Docker daemon socket or specific files. Run this command to grant your
+user account access:
+
+```bash
+sudo usermod -aG docker $USER
+```
+
+Apply the changes with:
+```bash
+newgrp docker
+```
+
 ## Development
 
 ### Frontend Development
