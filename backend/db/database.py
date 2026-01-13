@@ -7,18 +7,24 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
  
-# --- SQLite Configuration (Original) ---
+# --- SQLite Configuration (Original/prototype phase) ---
 # URL = 'sqlite:///./ig_api.db'
 # engine = create_engine(URL, connect_args={"check_same_thread": False})
 # ---------------------------------------
 
-# --- PostgreSQL Configuration ---
-# DB_USER = os.getenv("DB_USER")
-# DB_PASS = os.getenv("DB_PASS")
-# DB_HOST = os.getenv("DB_HOST")
-# DB_NAME = os.getenv("DB_NAME")
-# URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
+# --- PostgreSQL Local Configuration ---
+"""
+DB_USER = os.getenv("DB_USER")
+DB_PASS = os.getenv("DB_PASS")
+DB_HOST = os.getenv("DB_HOST")
+DB_NAME = os.getenv("DB_NAME")
+URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
+"""
+# ---------------------------------------
+
+# --- PostgreSQL Remote Configuration ---
 URL = os.getenv("DATABASE_URL")
+# ---------------------------------------
 
 # SQLAlchemy requires 'postgresql://', but some providers (like Railway) return 'postgres://'
 if URL and URL.startswith("postgres://"):

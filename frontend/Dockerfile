@@ -1,17 +1,18 @@
-# Stage 1: Build
-FROM node:18-alpine as build
+# Use Node 22 to satisfy Vite 7 requirements
+FROM node:22-alpine as build
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json package-lock.json* ./
 RUN npm install
 
 COPY . .
 RUN npm run build
 
-# Stage 2: Serve
+# Serve with Nginx
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Add nginx config for React Router
+RUN echo 'server { listen 80; location / { root /usr/share/nginx/html; index index.html index.htm; try_files $uri $uri/ /index.html; } }' > /etc/nginx/conf.d/default.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
