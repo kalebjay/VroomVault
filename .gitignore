@@ -63,3 +63,5 @@ coverage.xml
 *.sqlite3
 *.db
 instance/
+node_modules/
+dist/
