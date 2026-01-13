@@ -1,6 +1,6 @@
 aiofiles
 apscheduler
-bcrypt
+bcrypt==3.2.2
 fastapi
 passlib
 pydantic

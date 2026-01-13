@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -15,6 +16,17 @@ from utils.scheduler import check_upcoming_expirations
 # alias slb ='sqlitebrowser &' (must open DB with ig_api.db file)
 
 app = FastAPI()
+
+origins = ['http://localhost:5173', 'http://127.0.0.1:5173']
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_origin_regex='https?://.*',
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*']
+)
+
 scheduler = AsyncIOScheduler()
 
 @app.on_event("startup")
@@ -40,16 +52,10 @@ api_router.include_router(maintenance.router)
 
 app.include_router(api_router)
 
-origins = ['http://localhost:5173']
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=['*'],
-    allow_headers=['*']
-)
-
 
 models.Base.metadata.create_all(engine)
+
+if not os.path.exists('images'):
+    os.makedirs('images')
 
 app.mount('/images', StaticFiles(directory='images'), name='images')
