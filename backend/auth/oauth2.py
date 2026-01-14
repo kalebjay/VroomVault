@@ -18,6 +18,9 @@ load_dotenv(dotenv_path=backend_root / ".env")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
+# To generate a new SECRET_KEY, you can use the following command:
+# python -c "import secrets; print(secrets.token_hex(24))"
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 if not SECRET_KEY:
     raise ValueError("No SECRET_KEY set for JWT authentication. Please set it in your .env file.")
