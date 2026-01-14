@@ -34,6 +34,8 @@ scheduler = AsyncIOScheduler()
 
 @app.on_event("startup")
 async def startup_event():
+    # Create DB tables on startup
+    models.Base.metadata.create_all(engine)
     # Schedule job to run every day at a specific time (9:00 AM UTC, 4 AM ET)
     scheduler.add_job(check_upcoming_expirations, CronTrigger(hour=9, minute=0, second=0))
     # For testing, '*/5' = every 5th second
@@ -55,8 +57,6 @@ api_router.include_router(maintenance.router)
 
 app.include_router(api_router)
 
-
-models.Base.metadata.create_all(engine)
 
 if not os.path.exists('images'):
     os.makedirs('images')
