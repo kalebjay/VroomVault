@@ -39,7 +39,11 @@ scheduler = AsyncIOScheduler()
 @app.on_event("startup")
 async def startup_event():
     # Create DB tables on startup
-    models.Base.metadata.create_all(engine)
+    try:
+        models.Base.metadata.create_all(engine)
+        print("INFO: Database tables created successfully.")
+    except Exception as e:
+        print(f"ERROR: Failed to create database tables: {e}")
     # Schedule job to run every day at a specific time (9:00 AM UTC, 4 AM ET)
     scheduler.add_job(check_upcoming_expirations, CronTrigger(hour=9, minute=0, second=0))
     # For testing, '*/5' = every 5th second
