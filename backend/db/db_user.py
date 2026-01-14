@@ -45,7 +45,7 @@ def update_user(id: int, db: Session, request: UserUpdate):
     if not user:
         raise user_not_found_exception(id)
     # Create a dictionary of the request data, excluding any fields that were not set
-    update_data = request.dict(exclude_unset=True)
+    update_data = request.model_dump(exclude_unset=True)
 
     # Check for username/email conflicts if they are being updated
     if "username" in update_data and update_data["username"] != user.username:

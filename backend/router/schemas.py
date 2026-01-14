@@ -12,7 +12,7 @@ class UserBase(BaseModel):
 class User(BaseModel):
     username: str
     class Config():
-        orm_mode = True
+        from_attributes = True
 
 class UserAuth(BaseModel):
     id: int
@@ -21,7 +21,7 @@ class UserAuth(BaseModel):
     notification_days_advance: int
     notification_frequency: str
     class Config():
-        orm_mode = True
+        from_attributes = True
 
 class UserDisplay(BaseModel):
     username: str
@@ -29,7 +29,7 @@ class UserDisplay(BaseModel):
     notification_days_advance: int
     notification_frequency: str
     class Config():
-        orm_mode = True
+        from_attributes = True
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None
@@ -50,7 +50,7 @@ class VehicleBase(BaseModel):
     exp_registration: Optional[datetime] = None
     exp_safety: Optional[datetime] = None
     class Config():
-        orm_mode = True
+        from_attributes = True
 
 # =================== Maintenance Record Schemas ===================
 
@@ -60,13 +60,13 @@ class MaintenanceRecordBase(BaseModel):
     cost: float
     description: str
     class Config():
-        orm_mode = True
+        from_attributes = True
 
 class MaintenanceRecordDisplay(MaintenanceRecordBase):
     id: int
     type: str
     class Config():
-        orm_mode = True
+        from_attributes = True
 
 class OilChangeRecordCreate(MaintenanceRecordBase):
     type: Literal["oil_change"] = "oil_change"
@@ -77,7 +77,7 @@ class OilChangeRecordDisplay(MaintenanceRecordDisplay):
     oil_type: str
     filter_part_number: str
     class Config():
-        orm_mode = True
+        from_attributes = True
 
 class TireRotationRecordCreate(MaintenanceRecordBase):
     type: Literal["tire_rotation"] = "tire_rotation"
@@ -88,7 +88,7 @@ class TireRotationRecordDisplay(MaintenanceRecordDisplay):
     tire_type: str
     tire_part_number: str
     class Config():
-        orm_mode = True
+        from_attributes = True
 
 class TireChangeRecordCreate(MaintenanceRecordBase):
     type: Literal["tire_change"] = "tire_change"
@@ -99,7 +99,7 @@ class TireChangeRecordDisplay(MaintenanceRecordDisplay):
     tire_type: str
     tire_part_number: str
     class Config():
-        orm_mode = True
+        from_attributes = True
 
 class BrakeChangeRecordCreate(MaintenanceRecordBase):
     type: Literal["brake_change"] = "brake_change"
@@ -110,7 +110,7 @@ class BrakeChangeRecordDisplay(MaintenanceRecordDisplay):
     brake_type: str
     brake_part_number: str
     class Config():
-        orm_mode = True
+        from_attributes = True
 
 # A Union to handle different maintenance types in request bodies and responses
 AnyMaintenanceRecordCreate = Union[OilChangeRecordCreate, TireRotationRecordCreate, TireChangeRecordCreate, BrakeChangeRecordCreate]
@@ -123,4 +123,4 @@ class VehicleDisplay(VehicleBase):
     owner_id: int
     maint_records: List[AnyMaintenanceRecordDisplay] = []
     class Config():
-        orm_mode = True
+        from_attributes = True

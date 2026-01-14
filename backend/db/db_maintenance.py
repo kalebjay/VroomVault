@@ -6,7 +6,7 @@ from utils.exceptions import not_found_exception, bad_request_exception
 
 
 def create_maintenance_record(db: Session, request: AnyMaintenanceRecordCreate, vehicle_id: int):
-    record_data = request.dict()
+    record_data = request.model_dump()
     record_type = record_data.pop("type")
 
     if record_type == "oil_change":
@@ -41,7 +41,7 @@ def get_record_by_id(db: Session, record_id: int):
     return record
 
 def update_maintenance_record(db: Session, record: models.MaintenanceRecord, request: AnyMaintenanceRecordCreate):
-    for key, value in request.dict(exclude_unset=True).items():
+    for key, value in request.model_dump(exclude_unset=True).items():
         setattr(record, key, value)
     db.commit()
     db.refresh(record)
