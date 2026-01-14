@@ -30,6 +30,10 @@ app.add_middleware(
     allow_headers=['*']
 )
 
+@app.get("/")
+def health_check():
+    return {"status": "running", "service": "VroomVault Backend"}
+
 scheduler = AsyncIOScheduler()
 
 @app.on_event("startup")

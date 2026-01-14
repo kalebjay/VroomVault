@@ -26,6 +26,10 @@ URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 URL = os.getenv("DATABASE_URL")
 # ---------------------------------------
 
+if not URL:
+    print("WARNING: DATABASE_URL environment variable not found. Using SQLite fallback.")
+    URL = "sqlite:///./vroomvault_fallback.db"
+
 # SQLAlchemy requires 'postgresql://', but some providers (like Railway) return 'postgres://'
 if URL and URL.startswith("postgres://"):
     URL = URL.replace("postgres://", "postgresql://", 1)
