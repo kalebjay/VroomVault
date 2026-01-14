@@ -14,7 +14,7 @@ RUN npm run build
 # Serve with Nginx
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
+ENV PORT=80
 # Add nginx config for React Router
-RUN echo 'server { listen 80; location / { root /usr/share/nginx/html; index index.html index.htm; try_files $uri $uri/ /index.html; } }' > /etc/nginx/conf.d/default.conf
-EXPOSE 80
+RUN echo 'server { listen ${PORT}; location / { root /usr/share/nginx/html; index index.html index.htm; try_files $uri $uri/ /index.html; } }' > /etc/nginx/templates/default.conf.template
 CMD ["nginx", "-g", "daemon off;"]
