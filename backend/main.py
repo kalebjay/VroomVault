@@ -18,10 +18,13 @@ from utils.scheduler import check_upcoming_expirations
 app = FastAPI()
 
 origins = ['http://localhost:5173', 'http://127.0.0.1:5173']
+
+if os.getenv("ALLOWED_ORIGINS"):
+    origins.append(os.getenv("ALLOWED_ORIGINS"))
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_origin_regex='https?://.*',
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*']
