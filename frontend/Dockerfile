@@ -15,7 +15,6 @@ RUN npm run build
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 ENV PORT=80
-ENV BACKEND_URL=http://localhost:8080
 
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 CMD ["nginx", "-g", "daemon off;"]
