@@ -1,22 +1,11 @@
-from fastapi import HTTPException, status
-from .models import DbUser, DbVehicle
+from .models import DbVehicle
 from router.schemas import VehicleBase, UserAuth
 from utils.exceptions import not_found_exception
 from sqlalchemy.orm import Session, selectinload
 
 
 def create_vehicle(db: Session, request: VehicleBase, user: UserAuth):
-    new_vehicle = DbVehicle(
-        make = request.make,
-        model = request.model,
-        year = request.year,
-        color = request.color,
-        vin = request.vin,
-        license_plate = request.license_plate,
-        exp_registration = request.exp_registration,
-        exp_safety = request.exp_safety,
-        owner_id = user.id # UserAuth has an 'id' attribute
-    )
+    new_vehicle = DbVehicle(**request.model_dump(), owner_id=user.id)
     db.add(new_vehicle)
     db.commit()
     db.refresh(new_vehicle)
@@ -49,14 +38,8 @@ def update_vehicle(id: int, request: VehicleBase, db: Session):
     if not vehicle:
         raise not_found_exception("Vehicle", id)
 
-    vehicle.make = request.make
-    vehicle.model = request.model
-    vehicle.year = request.year
-    vehicle.color = request.color
-    vehicle.vin = request.vin
-    vehicle.license_plate = request.license_plate
-    vehicle.exp_registration = request.exp_registration
-    vehicle.exp_safety = request.exp_safety
+    for key, value in request.model_dump(exclude_unset=True).items():
+        setattr(vehicle, key, value)
 
     db.commit()
     db.refresh(vehicle)
