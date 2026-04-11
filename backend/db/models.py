@@ -1,15 +1,17 @@
 from .database import Base
 from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float, Boolean
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
 
 class DbUser(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String)
-    email = Column(String)
+    username = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True)
     password = Column(String)
+    is_admin = Column(Boolean, default=False)
     notification_days_advance = Column(Integer, default=30, nullable=False)
     notification_frequency = Column(String, default='weekly', nullable=False)
     vehicles = relationship("DbVehicle", back_populates="owner")
@@ -24,9 +26,9 @@ class DbVehicle(Base):
     color = Column(String)
     vin = Column(String)
     license_plate = Column(String)
-    exp_registration = Column(DateTime(timezone=True), default=datetime.now)
-    exp_safety = Column(DateTime(timezone=True), default=datetime.now)
-    last_oil = Column(DateTime(timezone=True), default=datetime.now)
+    exp_registration = Column(DateTime(timezone=True), server_default=func.now())
+    exp_safety = Column(DateTime(timezone=True), server_default=func.now())
+    last_oil = Column(DateTime(timezone=True), server_default=func.now())
  
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("DbUser", back_populates="vehicles")
@@ -35,7 +37,7 @@ class DbVehicle(Base):
 class MaintenanceRecord(Base):
     __tablename__ = "maintenance_records"
     id = Column(Integer, primary_key=True, index=True)
-    date = Column(DateTime(timezone=True), default=datetime.now)
+    date = Column(DateTime(timezone=True), server_default=func.now())
     mileage = Column(Integer)
     cost = Column(Float)
     description = Column(String)

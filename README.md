@@ -119,7 +119,7 @@ SQLite can be used for light usage
 
 PostgreSQL is the recommended database for production
 - see online tutorials for how to set up postgres locally
-- set your database credentials in VroomVault/backend/.env
+- set your database credentials in the root `.env` file (`VroomVault/.env`)
 - recommend using a db viewer such as pgAdmin to view data
 
 
@@ -127,9 +127,15 @@ PostgreSQL is the recommended database for production
 
 To run the application, you will need to configure the following environment variables.
 
-**Backend (`backend/.env`):**
+**Root (`.env`):**
 ```env
-DATABASE_URL=postgresql://user:password@localhost/dbname
+# Database configuration (Used by Docker and local fallback)
+DB_USER=postgres
+DB_PASS=password
+DB_NAME=vroomvault
+DB_HOST=localhost
+BACKEND_URL=http://backend:8000
+
 SECRET_KEY=your_secret_key
 
 # Email Settings (Required for notifications)

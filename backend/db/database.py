@@ -5,7 +5,9 @@ from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
-load_dotenv()
+# Path adjusted to find .env at the project root
+env_path = os.path.join(os.path.dirname(__file__), '../../.env')
+load_dotenv(dotenv_path=env_path)
  
 # --- SQLite Configuration (Original/prototype phase) ---
 # URL = 'sqlite:///./ig_api.db'
@@ -24,6 +26,15 @@ URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
 # --- PostgreSQL Remote Configuration ---
 URL = os.getenv("DATABASE_URL")
+
+# If DATABASE_URL is not set (local dev), construct it from components
+if not URL:
+    DB_USER = os.getenv("DB_USER")
+    DB_PASS = os.getenv("DB_PASS")
+    DB_HOST = os.getenv("DB_HOST", "localhost")
+    DB_NAME = os.getenv("DB_NAME")
+    if all([DB_USER, DB_PASS, DB_NAME]):
+        URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 # ---------------------------------------
 
 if not URL:
@@ -35,7 +46,11 @@ if URL and URL.startswith("postgres://"):
     URL = URL.replace("postgres://", "postgresql://", 1)
 # --------------------------------
 
-engine = create_engine(URL)
+connect_args = {}
+if URL and URL.startswith("sqlite"):
+    connect_args["check_same_thread"] = False
+
+engine = create_engine(URL, connect_args=connect_args)
  
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
  

@@ -17,13 +17,13 @@ def createUser(request: UserBase, db: Session = Depends(get_db)):
     return create_user(db, request)
 
 # get all users
-@router.get('', response_model=list[UserDisplay])
-def getAllUsers(db: Session = Depends(get_db)):
+@router.get('', response_model=list[UserDisplay], dependencies=[Depends(get_current_user)])
+def getAllUsers(db: Session = Depends(get_db), current_user: UserAuth = Depends(get_current_user)):
     return get_all_users(db)
 
 # get user with ID
-@router.get('/{id}', response_model=UserDisplay)
-def getUserById(id: int, db: Session = Depends(get_db)):
+@router.get('/{id}', response_model=UserDisplay, dependencies=[Depends(get_current_user)])
+def getUserById(id: int, db: Session = Depends(get_db), current_user: UserAuth = Depends(get_current_user)):
     return get_user_by_id(db, id)
 
 # get user with username    
