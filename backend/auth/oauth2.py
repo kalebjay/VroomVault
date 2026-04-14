@@ -12,9 +12,7 @@ from db import models
 from router.schemas import UserAuth
 
 
-current_dir = Path(__file__).resolve().parent
-backend_root = current_dir.parent
-load_dotenv(dotenv_path=backend_root / ".env")
+load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 

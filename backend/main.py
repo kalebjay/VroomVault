@@ -16,8 +16,14 @@ from utils.scheduler import check_upcoming_expirations
 # open DB browser for SQLite with 
 # alias slb ='sqlitebrowser &' (must open DB with ig_api.db file)
 
+scheduler = AsyncIOScheduler()
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Ensure images directory exists inside the container
+    if not os.path.exists('images'):
+        os.makedirs('images')
+
     # Create DB tables on startup
     try:
         models.Base.metadata.create_all(engine)
@@ -34,7 +40,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-origins = ['http://localhost:5173', 'http://127.0.0.1:5173']
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://0.0.0.0:5173",
+]
 
 if os.getenv("ALLOWED_ORIGINS"):
     origins.extend(os.getenv("ALLOWED_ORIGINS").split(","))
@@ -51,8 +61,6 @@ app.add_middleware(
 def health_check():
     return {"status": "running", "service": "VroomVault Backend"}
 
-scheduler = AsyncIOScheduler()
-
 # Create a master router for the /api prefix
 api_router = APIRouter(prefix="/api")
 
@@ -63,9 +71,5 @@ api_router.include_router(maintenance.router)
 
 
 app.include_router(api_router)
-
-
-if not os.path.exists('images'):
-    os.makedirs('images')
 
 app.mount('/images', StaticFiles(directory='images'), name='images')

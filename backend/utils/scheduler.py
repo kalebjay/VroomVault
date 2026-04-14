@@ -1,23 +1,24 @@
 import os
 import asyncio
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from db.database import SessionLocal
 from db.models import DbVehicle, DbUser # DbUser is already imported, which is good.
 
-load_dotenv()
+load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env")
 
 # Email Configuration
 conf = ConnectionConfig(
-    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
-    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
-    MAIL_FROM=os.getenv("MAIL_FROM"),
-    MAIL_PORT=int(os.getenv("MAIL_PORT")),
-    MAIL_SERVER=os.getenv("MAIL_SERVER"),
-    MAIL_STARTTLS=os.getenv("MAIL_STARTTLS").lower() == 'true',
-    MAIL_SSL_TLS=os.getenv("MAIL_SSL_TLS").lower() == 'true',
+    MAIL_USERNAME=os.getenv("MAIL_USERNAME", ""),
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD", ""),
+    MAIL_FROM=os.getenv("MAIL_FROM", ""),
+    MAIL_PORT=int(os.getenv("MAIL_PORT", 587)),
+    MAIL_SERVER=os.getenv("MAIL_SERVER", "smtp.gmail.com"),
+    MAIL_STARTTLS=(os.getenv("MAIL_STARTTLS") or "True").lower() == 'true',
+    MAIL_SSL_TLS=(os.getenv("MAIL_SSL_TLS") or "False").lower() == 'true',
     USE_CREDENTIALS=True,
     VALIDATE_CERTS=True
 )

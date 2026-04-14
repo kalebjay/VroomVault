@@ -1,19 +1,19 @@
 server {
     listen ${PORT};
+
     location / {
         root /usr/share/nginx/html;
         index index.html index.htm;
-        try_files $uri $uri/ /index.html;
+        # Use ${DOLLAR} to protect these from envsubst
+        try_files ${DOLLAR}uri ${DOLLAR}uri/ /index.html;
     }
 
-    # Proxy API requests to the private backend
     location /api/ {
         proxy_pass ${BACKEND_URL};
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header Host ${DOLLAR}host;
+        proxy_set_header X-Real-IP ${DOLLAR}remote_addr;
     }
 
-    # Proxy static images to the private backend
     location /images/ {
         proxy_pass ${BACKEND_URL};
     }

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:15-alpine
@@ -10,11 +8,15 @@ services:
       - POSTGRES_PASSWORD=${DB_PASS}
       - POSTGRES_DB=${DB_NAME}
     restart: always
+    ports:
+      - "5433:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - vroom-network
 
   backend:
     build: ./backend
@@ -30,6 +32,8 @@ services:
       db:
         condition: service_healthy
     restart: always
+    networks:
+      - vroom-network
 
   frontend:
     build:
@@ -40,10 +44,33 @@ services:
       - "5173:80"
     environment:
       - BACKEND_URL=http://backend:8000
-      - backend_url=http://backend:8000
+      - PORT=80
+      - DOLLAR=$
     depends_on:
       - backend
     restart: always
+    networks:
+      - vroom-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    profiles:
+      - debug
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@vroomvault.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - vroom-network
+
+networks:
+  vroom-network:
+    driver: bridge
+    name: vroom-bridge-v2
 
 volumes:
   postgres_data:
