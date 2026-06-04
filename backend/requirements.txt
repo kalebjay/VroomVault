@@ -13,3 +13,5 @@ sqlalchemy
 uvicorn
 psycopg2-binary
 email-validator
+pillow==10.3.0
+pillow-heif==0.16.0

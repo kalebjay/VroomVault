@@ -69,4 +69,4 @@ def delete_user(id: int, db: Session):
         raise user_not_found_exception(id)
     db.delete(user)
     db.commit()
-    return
+    return "OK"

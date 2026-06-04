@@ -9,6 +9,7 @@ build/
 develop-eggs/
 dist/
 downloads/
+images/
 eggs/
 .eggs/
 lib/
@@ -65,3 +66,4 @@ coverage.xml
 instance/
 node_modules/
 dist/
+app.txt

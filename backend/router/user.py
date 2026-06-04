@@ -5,6 +5,7 @@ from router.schemas import UserBase, UserDisplay, UserUpdate, UserAuth
 from sqlalchemy.orm.session import Session
 from auth.oauth2 import get_current_user
 from utils.exceptions import forbidden_exception
+from db.hashing import Hash
 
 router = APIRouter(
     prefix='/users',
@@ -40,7 +41,20 @@ def updateUser(id: int, request: UserUpdate, db: Session = Depends(get_db), curr
     return update_user(id, db, request)
 
 # delete user
-@router.delete('/{id}')
-def deleteUser(id: int, db: Session = Depends(get_db)):
-    # TODO only admin user can perform this
+@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
+def deleteUser(id: int, 
+               password_confirm: str, 
+               db: Session = Depends(get_db), 
+               current_user: UserAuth = Depends(get_current_user)):
+    # Guard: Ensure users can only delete themselves
+    if current_user.id != id:
+        raise forbidden_exception(detail="Not authorized to delete this account.")
+        
+    # Fetch the user record to verify password
+    user_record = get_user_by_id(db, id)
+    
+    # Verify the plain text password against the hashed DB password
+    if not Hash.verify(user_record.password, password_confirm):
+        raise forbidden_exception(detail="Incorrect password. Account deletion aborted.")
+        
     return delete_user(id, db)

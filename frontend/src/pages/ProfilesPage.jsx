@@ -1,11 +1,13 @@
 import { React, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Added useNavigate
 import { useAuth } from '../utils/AuthContext';
 import apiClient from '../utils/apiClient';
 import styles from './Pages.module.css';
+import componentStyles from '../components/Components.module.css'; // Reuses your existing modal styles
 
 const ProfilesPage = () => {
-  const { user, setUser } = useAuth();
+  const { user, setUser, logout } = useAuth(); // Assuming your AuthContext provides a logout function
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -15,6 +17,11 @@ const ProfilesPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Account Deletion States
+  const [showPasswordStep, setShowPasswordStep] = useState(false);
+  const [showFinalConfirm, setShowFinalConfirm] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
 
   useEffect(() => {
     if (user?.username) {
@@ -40,23 +47,39 @@ const ProfilesPage = () => {
 
     try {
       const response = await apiClient.put(`/users/${user.id}`, formData);
-      // Update user in AuthContext
       setUser(prevUser => ({ ...prevUser, ...response.data }));
       setSuccess('Profile updated successfully!');
     } catch (error) {
-      console.error("Update failed:", error.response); // Log the full response for debugging
-      if (error.response && error.response.data && error.response.data.detail) {
-        // Handle FastAPI validation errors
-        if (Array.isArray(error.response.data.detail)) {
-          const errorMsg = error.response.data.detail.map(d => `${d.loc[d.loc.length - 1]}: ${d.msg}`).join(', ');
-          setError(`Validation Error: ${errorMsg}`);
-        } else {
-          // Handle other string-based detail errors (e.g., "Username already taken")
-          setError(`Update failed: ${error.response.data.detail}`);
-        }
-      } else {
-        setError('Failed to update profile. Please try again.');
-      }
+      setError(error.response?.data?.detail || 'Failed to update profile changes.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Step 1 handler: Move from password verification to final confirmation warning
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (!deletePassword) return;
+    setShowPasswordStep(false);
+    setShowFinalConfirm(true);
+  };
+
+  // Step 2 handler: Final approval to execute backend API call
+  const handleExecuteDeletion = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      await apiClient.delete(`/users/${user.id}`, {
+        params: { password_confirm: deletePassword }
+      });
+      
+      // Clean context state locally and redirect
+      if (logout) logout(); 
+      navigate('/login');
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Account deletion failed. Check password.');
+      setShowFinalConfirm(false);
+      setDeletePassword('');
     } finally {
       setLoading(false);
     }
@@ -64,9 +87,8 @@ const ProfilesPage = () => {
 
   return (
     <div className={styles.pageContainer}>
-      <h1 className={styles.header}>Your Profile</h1>
-      <p className={styles.subHeader}>Update your account settings</p>
-      <form onSubmit={handleSubmit} className={styles.loginForm} style={{ maxWidth: '500px' }}>
+      <h1 className={styles.title}>Your Profile</h1>
+      <form onSubmit={handleSubmit} className={styles.loginForm}>
         <div className={styles.formGroup}>
           <label htmlFor="username">Username:</label>
           <input id="username" name="username" type="text" value={formData.username} onChange={handleChange} required />
@@ -95,6 +117,58 @@ const ProfilesPage = () => {
           {loading ? 'Saving...' : 'Save Changes'}
         </button>
       </form>
+
+      {/* Danger Zone Component Container */}
+      <div className={styles.dangerZone}>
+        <button 
+          type="button" 
+          className={styles.deleteAccountButton}
+          onClick={() => { setShowPasswordStep(true); setError(''); setSuccess(''); }}
+        >
+          Delete Account
+        </button>
+      </div>
+
+      {/* Password Prompt Modal Overlay */}
+      {showPasswordStep && (
+        <div className={componentStyles.modalOverlay}>
+          <div className={componentStyles.modalContent}>
+            <h2>Confirm Account Password</h2>
+            <p>Please enter your password to proceed with deleting your account.</p>
+            <form onSubmit={handlePasswordSubmit}>
+              <input 
+                type="password" 
+                placeholder="Password"
+                value={deletePassword}
+                onChange={(e) => setDeletePassword(e.target.value)}
+                className={styles.passwordConfirmInput}
+                required
+              />
+              <div className={styles.modalConfirmActions}>
+                <button type="button" className={styles.confirmNoButton} onClick={() => { setShowPasswordStep(false); setDeletePassword(''); }}>Cancel</button>
+                <button type="submit" className={styles.confirmYesButton}>Confirm</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Final Disclaimer Warning Pop-up */}
+      {showFinalConfirm && (
+        <div className={componentStyles.modalOverlay}>
+          <div className={componentStyles.modalContent}>
+            <h2 style={{ color: '#e74c3c' }}>Are you sure?</h2>
+            <p>Are you sure you want to delete your account? This will remove your profile and all vehicles and their information.</p>
+            <div className={styles.modalConfirmActions}>
+              <button type="button" className={styles.confirmNoButton} onClick={() => { setShowFinalConfirm(false); setDeletePassword(''); }}>No</button>
+              <button type="button" className={styles.confirmYesButton} onClick={handleExecuteDeletion} disabled={loading}>
+                {loading ? 'Deleting...' : 'Yes'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={{ marginTop: '2rem' }}>
         <Link to="/" className={styles.backButton}>Back to Home</Link>
       </div>

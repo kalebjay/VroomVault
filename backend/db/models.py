@@ -29,6 +29,7 @@ class DbVehicle(Base):
     exp_registration = Column(DateTime(timezone=True), server_default=func.now())
     exp_safety = Column(DateTime(timezone=True), server_default=func.now())
     last_oil = Column(DateTime(timezone=True), server_default=func.now())
+    image_url = Column(String, nullable=True)
  
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("DbUser", back_populates="vehicles")
@@ -76,3 +77,8 @@ class BrakeChangeRecord(MaintenanceRecord):
     brake_type = Column(String)
     brake_part_number = Column(String)
     __mapper_args__ = {"polymorphic_identity": "brake_change",}
+
+class MiscRecord(MaintenanceRecord):
+    __tablename__ = "misc_records"
+    id = Column(Integer, ForeignKey("maintenance_records.id"), primary_key=True)
+    __mapper_args__ = {"polymorphic_identity": "misc"}

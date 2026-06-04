@@ -11,7 +11,7 @@ function MaintenanceItem({ item, onEdit, onDelete }) {
       <div className={styles.maintenanceItemHeader}>
         <div className={styles.itemName}>
           {/* Capitalize the type for display */}
-          <h4>{item.type.replace('_', ' ')}</h4>
+          <h4>{item.type === 'misc' ? 'Miscellaneous' : item.type.replace('_', ' ')}</h4>
         </div>
         <div>
           <button onClick={onEdit} className={styles.iconButton} title="Edit Record"><FaPen /></button>

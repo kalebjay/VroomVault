@@ -112,15 +112,35 @@ class BrakeChangeRecordDisplay(MaintenanceRecordDisplay):
     class Config():
         from_attributes = True
 
+class MiscRecordCreate(MaintenanceRecordBase):
+    type: Literal["misc"] = "misc"
+
+class MiscRecordDisplay(MaintenanceRecordDisplay):
+    class Config():
+        from_attributes = True
+
 # A Union to handle different maintenance types in request bodies and responses
-AnyMaintenanceRecordCreate = Union[OilChangeRecordCreate, TireRotationRecordCreate, TireChangeRecordCreate, BrakeChangeRecordCreate]
-AnyMaintenanceRecordDisplay = Union[OilChangeRecordDisplay, TireRotationRecordDisplay, TireChangeRecordDisplay, BrakeChangeRecordDisplay]
+AnyMaintenanceRecordCreate = Union[
+    OilChangeRecordCreate, 
+    TireRotationRecordCreate, 
+    TireChangeRecordCreate, 
+    BrakeChangeRecordCreate,
+    MiscRecordCreate
+]
+AnyMaintenanceRecordDisplay = Union[
+    OilChangeRecordDisplay, 
+    TireRotationRecordDisplay, 
+    TireChangeRecordDisplay, 
+    BrakeChangeRecordDisplay,
+    MiscRecordDisplay
+]
 
 # =================== Updated VehicleDisplay Schema ===================
 
 class VehicleDisplay(VehicleBase):
     id: int
     owner_id: int
+    image_url: Optional[str] = None
     maint_records: List[AnyMaintenanceRecordDisplay] = []
     class Config():
         from_attributes = True

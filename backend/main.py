@@ -39,6 +39,7 @@ async def lifespan(app: FastAPI):
     scheduler.shutdown()
 
 app = FastAPI(lifespan=lifespan)
+app.mount("/images", StaticFiles(directory="images"), name="images")
 
 origins = [
     "http://localhost:5173",

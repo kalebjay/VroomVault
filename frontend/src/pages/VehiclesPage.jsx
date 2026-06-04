@@ -153,6 +153,7 @@ const VehiclesPage = () => {
               onEditVehicle={() => setModalState({ ...modalState, editVehicle: vehicle })}
               onDeleteMaintenance={handleMaintenanceDeleted} // Pass delete handler
               onDeleteVehicle={() => handleVehicleDeleted(vehicle.id)}
+              onVehicleUpdated={handleVehicleUpdated}
             />
           ))}
         </ul>

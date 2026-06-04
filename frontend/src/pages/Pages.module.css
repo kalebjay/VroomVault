@@ -116,7 +116,7 @@
 }
 
 .formFooter {
-  margin-top: 5rem;
+  margin-top: 1.5rem; /* Matches the spacing of your formGroups */
   text-align: center;
 }
 
@@ -225,4 +225,66 @@
 .logoutButton:hover {
   background-color: #ff9900;
   color: #2c3e50;
+}
+
+/* Account Destruction UI Styles */
+.dangerZone {
+  margin-top: 3rem;
+  border-top: 2px dashed #e74c3c;
+  padding-top: 2rem;
+  width: 100%;
+  max-width: 500px;
+}
+
+.deleteAccountButton {
+  background-color: #c0392b;
+  color: #fff;
+  border: 2px solid #e74c3c;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.deleteAccountButton:hover {
+  background-color: #e74c3c;
+}
+
+.passwordConfirmInput {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 1rem 0;
+  border: 1px solid #34495e;
+  border-radius: 4px;
+  background-color: #34495e;
+  color: #ecf0f1;
+  font-size: 1rem;
+}
+
+.modalConfirmActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.confirmYesButton {
+  background-color: #c0392b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.confirmNoButton {
+  background-color: #7f8c8d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
 }

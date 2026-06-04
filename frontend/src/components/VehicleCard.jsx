@@ -1,23 +1,66 @@
-import React from 'react';
-import { FaPen, FaTrashAlt, FaPlus } from 'react-icons/fa';
+import React, { useRef } from 'react';
+import { FaPen, FaTrashAlt, FaPlus, FaCamera } from 'react-icons/fa';
 import styles from './Components.module.css';
 import MaintenanceItem from './MaintenanceItem';
+import apiClient from '../utils/apiClient';
 
-function VehicleCard({ vehicle, openMaintenanceModal, onEditMaintenance, onEditVehicle, onDeleteMaintenance, onDeleteVehicle }) {
-  // Helper to format dates, returns 'N/A' if date is not available
+function VehicleCard({ vehicle, openMaintenanceModal, onEditMaintenance, onEditVehicle, onDeleteMaintenance, onDeleteVehicle, onVehicleUpdated }) {
+  const fileInputRef = useRef(null);
+
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
-    // Adding timeZone to prevent off-by-one day errors
     return new Date(dateString).toLocaleDateString(undefined, { timeZone: 'UTC' });
+  };
+
+  // Handles clicking the image area to simulate clicking the invisible system input tag
+  const handleImageClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await apiClient.post(`/vehicles/${vehicle.id}/upload-image`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      if (onVehicleUpdated) {
+        onVehicleUpdated(response.data); // Keep vehicle lists fresh automatically
+      }
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to upload photo.');
+    }
   };
 
   return (
     <div className={styles.vehicleCard}>
       <div className={styles.vehicleHeader}>
         <div className={styles.vehicleInfo}>
-          <div className={styles.vehicleIcon}>
-            {/* Vehicle Image to be added*/}      
+          
+          {/* Interactive Smartphone Upload Container */}
+          <div className={styles.vehicleIconContainer} onClick={handleImageClick} title="Upload Vehicle Photo">
+            {vehicle.image_url ? (
+              <img src={vehicle.image_url} alt="Vehicle Profile" className={styles.vehicleImageAvatar} />
+            ) : (
+              <div className={styles.imagePlaceholderIcon}>
+                <FaCamera size={22} />
+                <span className={styles.uploadMiniText}>Add Photo</span>
+              </div>
+            )}
+            {/* Native device file hook (hidden to preserve custom styling look) */}
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              style={{ display: 'none' }} 
+              accept="image/jpeg,image/jpg,image/png,image/heic"
+              onChange={handleFileChange} 
+            />
           </div>
+
           <div>
             <h2 className={styles.vehicleName}>{`${vehicle.year} ${vehicle.make} ${vehicle.model}`}</h2>
             <p className={styles.vehicleDetails}>{`${vehicle.color} • ${vehicle.license_plate}`}</p>

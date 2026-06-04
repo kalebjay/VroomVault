@@ -20,57 +20,43 @@ services:
 
   backend:
     build: ./backend
-    volumes:
-      - ./backend/images:/app/images
     ports:
       - "8000:8000"
     env_file:
       - .env
     environment:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@db:5432/${DB_NAME}
+      - ALLOWED_ORIGINS=http://localhost:5173
+    # Mount local folder into the container's working directory
+    volumes:
+      - ./backend:/app
+      - ./backend/images:/app/images
+    # Override the Dockerfile CMD to inject the --reload flag for local development
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       db:
         condition: service_healthy
-    restart: always
     networks:
       - vroom-network
 
   frontend:
     build:
       context: ./frontend
-      args:
-        VITE_API_BASE_URL: http://localhost:8000
+      # Targets 'dev' stage containing the Vite development server
+      target: dev 
     ports:
-      - "5173:80"
+      - "5173:5173" # Maps to Vite's default dev server port
+    # Mount the frontend folder and shield node_modules
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     environment:
       - BACKEND_URL=http://backend:8000
-      - PORT=80
-      - DOLLAR=$
-    depends_on:
-      - backend
-    restart: always
     networks:
       - vroom-network
-
-  pgadmin:
-    image: dpage/pgadmin4
-    profiles:
-      - debug
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@vroomvault.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
-    ports:
-      - "5050:80"
-    depends_on:
-      - db
-    restart: always
-    networks:
-      - vroom-network
-
-networks:
-  vroom-network:
-    driver: bridge
-    name: vroom-bridge-v2
 
 volumes:
   postgres_data:
+
+networks:
+  vroom-network:

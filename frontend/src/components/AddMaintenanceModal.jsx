@@ -59,20 +59,17 @@ const AddMaintenanceModal = ({ isOpen, onClose, onMaintenanceAdded, onMaintenanc
 
     let finalPayload = { ...basePayload };
 
-    // Add type-specific fields
+    // Add type-specific fields to the finalPayload variable
     if (maintenanceData.type === 'oil_change') {
       finalPayload.oil_type = maintenanceData.oil_type;
       finalPayload.filter_part_number = maintenanceData.filter_part_number;
-    } else if (maintenanceData.type === 'tire_rotation') {
-      finalPayload.tire_type = maintenanceData.tire_type;
-      finalPayload.tire_part_number = maintenanceData.tire_part_number;
-    } else if (maintenanceData.type === 'tire_change') {
+    } else if (maintenanceData.type === 'tire_rotation' || maintenanceData.type === 'tire_change') {
       finalPayload.tire_type = maintenanceData.tire_type;
       finalPayload.tire_part_number = maintenanceData.tire_part_number;
     } else if (maintenanceData.type === 'brake_change') {
       finalPayload.brake_type = maintenanceData.brake_type;
       finalPayload.brake_part_number = maintenanceData.brake_part_number;
-    }
+    } // 'misc' stays exactly equal to basePayload!
 
     try {
       if (isEditMode) {
@@ -80,9 +77,9 @@ const AddMaintenanceModal = ({ isOpen, onClose, onMaintenanceAdded, onMaintenanc
         onMaintenanceUpdated(vehicleId, response.data);
       } else {
         const response = await apiClient.post(`/vehicles/${vehicleId}/maintenance`, finalPayload);
-        onMaintenanceAdded(vehicleId, response.data); // Pass the new item back to parent
+        onMaintenanceAdded(vehicleId, response.data); 
       }
-      onClose(); // Close modal
+      onClose(); 
     } catch (err) {
       const errorMsg = isEditMode ? 'Failed to update maintenance item.' : 'Failed to add maintenance item.';
       setError(`${errorMsg} Please try again.`);
@@ -108,11 +105,23 @@ const AddMaintenanceModal = ({ isOpen, onClose, onMaintenanceAdded, onMaintenanc
               <option value="tire_rotation">Tire Rotation</option>
               <option value="tire_change">Tire Change</option>
               <option value="brake_change">Brake Change</option>
+              <option value="misc">Miscellaneous</option>
             </select>
             <input name="date" type="date" value={maintenanceData.date} onChange={handleChange} required />
             <input name="mileage" type="number" value={maintenanceData.mileage} onChange={handleChange} placeholder="Mileage" required />
             <input name="cost" type="number" step="0.01" value={maintenanceData.cost} onChange={handleChange} placeholder="Cost ($)" required />
-            <input name="description" value={maintenanceData.description} onChange={handleChange} placeholder="Description/Notes" required />
+            <textarea 
+              name="description" 
+              value={maintenanceData.description} 
+              onChange={handleChange} 
+              placeholder="Description/Notes" 
+              rows="3"
+              style={{ 
+                resize: 'vertical',  // Allows you to pull it down vertically, but blocks horizontal stretching
+                gridColumn: '1 / -1' // Forces the textarea to span the full width of the grid row if your layout changes
+              }} 
+              required 
+            />
             
             {maintenanceData.type === 'oil_change' && (
               <>
