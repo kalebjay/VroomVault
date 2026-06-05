@@ -144,3 +144,50 @@ class VehicleDisplay(VehicleBase):
     maint_records: List[AnyMaintenanceRecordDisplay] = []
     class Config():
         from_attributes = True
+
+# =================== Search Preference Schemas ==================
+class SearchPreferenceBase(BaseModel):
+    make: str
+    model: str
+    max_price: float
+    max_miles: int
+    min_year: Optional[int] = None
+    required_roof_height: Optional[str] = None       # "Low", "Medium", "High"
+    required_wheelbase_inches: Optional[float] = None
+    required_bed_length_inches: Optional[float] = None
+    required_passenger_capacity: Optional[int] = None
+    is_active: Optional[bool] = True
+
+class SearchPreferenceCreate(SearchPreferenceBase):
+    pass
+
+class SearchPreferenceDisplay(SearchPreferenceBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# =================== Golden Deal Schemas ===================
+class GoldenDealDisplay(BaseModel):
+    id: int
+    search_preference_id: int
+    vin: str
+    title: str
+    url: str
+    price: float
+    miles: int
+    year: int
+    trim: Optional[str] = None
+    roof_height: Optional[str] = None
+    wheelbase_inches: Optional[float] = None
+    bed_length_inches: Optional[float] = None
+    passenger_capacity: Optional[int] = None
+    market_average_price: float
+    market_discount: float
+    listing_source: Optional[str] = None
+    date_found: datetime
+
+    class Config:
+        from_attributes = True

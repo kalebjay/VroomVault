@@ -262,3 +262,136 @@
   background-color: #34495e;
   color: #ff9900;
 }
+
+/* ==========================================================================
+   Vehicle Hunter / Background Scraper Styles
+   ========================================================================== */
+
+.huntingContainer {
+  padding: 20px;
+  background-color: #2c3e50;
+  border-radius: 8px;
+  color: #ecf0f1;
+}
+
+.huntingSubtitle {
+  color: #bdc3c7;
+  font-size: 0.9rem;
+}
+
+.huntingForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.formRow {
+  display: flex;
+  gap: 10px;
+}
+
+.huntInput {
+  flex: 1;
+  padding: 10px;
+  background-color: #22313f;
+  border: 1px solid #4f5d73;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.dynamicSpecBox {
+  padding: 12px;
+  border-left: 3px solid #ff9900;
+  background-color: #34495e;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.dynamicSpecBox h4 {
+  margin: 0 0 5px 0;
+  color: #ff9900;
+}
+
+.submitHuntButton {
+  padding: 10px;
+  background-color: #ff9900;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submitHuntButton:hover:not(:disabled) {
+  background-color: #e68a00;
+}
+
+.submitHuntButton:disabled {
+  background-color: #7f8c8d;
+  cursor: not-allowed;
+}
+
+.idleText {
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+.transmittersList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.huntCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #34495e;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #4f5d73;
+}
+
+.huntCardTitle {
+  font-size: 1.1rem;
+  color: #ff9900;
+}
+
+.huntCardDetails {
+  font-size: 0.85rem;
+  color: #bdc3c7;
+  margin-top: 4px;
+}
+
+.tagContainer {
+  display: flex;
+  gap: 5px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.huntTag {
+  background-color: #22313f;
+  color: #ff9900;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #ff9900;
+}
+
+.deactivateButton {
+  padding: 6px 10px;
+  background-color: #c0392b;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.deactivateButton:hover {
+  background-color: #a8281a;
+}

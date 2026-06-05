@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from db import models
 from db.database import engine
-from router import user, authentication, maintenance, vehicle
+from router import user, authentication, maintenance, vehicle, scraper
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from utils.scheduler import check_upcoming_expirations
@@ -69,6 +69,7 @@ api_router.include_router(authentication.router)
 api_router.include_router(user.router)
 api_router.include_router(vehicle.router)
 api_router.include_router(maintenance.router)
+api_router.include_router(scraper.router)
 
 
 app.include_router(api_router)

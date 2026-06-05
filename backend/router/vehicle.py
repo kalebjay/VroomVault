@@ -10,6 +10,7 @@ from router.schemas import VehicleBase, VehicleDisplay, UserAuth
 from auth.oauth2 import get_current_user
 from utils.exceptions import forbidden_exception
 from pillow_heif import register_heif_opener
+from scraper.vin_decoder import decode_vin, extract_utility_specs
 
 router = APIRouter(
     prefix='/vehicles',
