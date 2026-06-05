@@ -1,5 +1,6 @@
 aiofiles
 apscheduler
+beautifulsoup4==4.12.2
 bcrypt==3.2.2
 fastapi
 httpx

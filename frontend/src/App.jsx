@@ -4,8 +4,9 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import TestPage from './pages/TestPage';
 import ProfilesPage from './pages/ProfilesPage';
-import VehiclesPage from './pages/VehiclesPage';  
-
+import VehiclesPage from './pages/VehiclesPage';
+import HuntingPage from './pages/HuntingPage';
+import DealsPage from './pages/DealsPage';
 import { useAuth } from './utils/AuthContext';
 
 // Start a local frontend react app 
@@ -32,6 +33,8 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/vehicles" element={<ProtectedRoute><VehiclesPage /></ProtectedRoute>} />
           <Route path="/profiles" element={<ProtectedRoute><ProfilesPage /></ProtectedRoute>} />
+          <Route path="/hunting" element={<ProtectedRoute><HuntingPage /></ProtectedRoute>} />
+          <Route path="/deals" element={<ProtectedRoute><DealsPage /></ProtectedRoute>} />
           <Route path="/test" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
         </Routes>
       </div>

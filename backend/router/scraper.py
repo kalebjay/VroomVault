@@ -2,9 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 from db.database import get_db
-from db import db_scraper
+from db import models, db_scraper
 from router import schemas
 from scraper.vin_decoder import decode_vin, extract_utility_specs
+from scraper import engine as scraper_engine
 
 # Test curl command
 # curl http://localhost:8000/api/scraper/decode/1FBAX2CV0JKA32346
@@ -44,7 +45,16 @@ def remove_hunt_preference(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail=f"Search preference with ID {id} not found.")
     return
 
-# Fetch the Curated "Golden Deals" Dashboard Feed
 @router.get("/deals", response_model=List[schemas.GoldenDealDisplay])
-def get_curated_deals(db: Session = Depends(get_db)):
-    return db_scraper.get_all_golden_deals(db)
+def get_intercepted_deals(db: Session = Depends(get_db)):
+    """Retrieve all intercepted high-value vehicle deals sorted by highest discount."""
+    deals = db.query(models.GoldenDeal).order_by(models.GoldenDeal.market_discount.desc()).all()
+    return deals
+
+@router.post("/run-hunter")
+async def trigger_hunter():
+    """Manually force the vehicle hunter scraping loop to execute immediately."""
+    await scraper_engine.run_vehicle_hunter()
+    return {"status": "success", "message": "Scraper drone cycle finished execution successfully."}
+
+# Can test with: curl -X POST http://localhost:8000/api/scraper/run-hunter

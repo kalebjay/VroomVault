@@ -1,19 +1,23 @@
 import os
 from contextlib import asynccontextmanager
+# third party imports
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
+from apscheduler.triggers.interval import IntervalTrigger
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+# local imports
 from db import models
 from db.database import engine
-from router import user, authentication, maintenance, vehicle, scraper
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from apscheduler.triggers.cron import CronTrigger
+from router import authentication, maintenance, scraper, user, vehicle
+from scraper.engine import run_vehicle_hunter
 from utils.scheduler import check_upcoming_expirations
 
-# Usage
+# Usage (if not using Docker Compose)
 # alias uvi  ='uvicorn main:app --reload' (displays on port 8000)
 # open in browser at http://127.0.0.1:8000/docs#/
-# open DB browser for SQLite with 
+# open DB browser for SQLite with (if not using postgres)
 # alias slb ='sqlitebrowser &' (must open DB with ig_api.db file)
 
 scheduler = AsyncIOScheduler()
@@ -31,10 +35,13 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         print(f"ERROR: Failed to create database tables: {e}")
     
-    # Schedule job to run every day at 9:00 AM UTC
+    # Job 1: Schedule to run every day at 9:00 AM UTC - for checking expirations and sending notifications
     scheduler.add_job(check_upcoming_expirations, CronTrigger(hour=9, minute=0, second=0))
+    # Job 2: Deploy Vehicle Hunter automated background pipeline every 4 hours
+    scheduler.add_job(run_vehicle_hunter, IntervalTrigger(hours=4))
+
     scheduler.start()
-    
+    print("INFO: All background daemons fully initialized.")
     yield
     scheduler.shutdown()
 
