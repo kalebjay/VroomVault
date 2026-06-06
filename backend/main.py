@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from contextlib import asynccontextmanager
 # third party imports
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -38,7 +39,7 @@ async def lifespan(app: FastAPI):
     # Job 1: Schedule to run every day at 9:00 AM UTC - for checking expirations and sending notifications
     scheduler.add_job(check_upcoming_expirations, CronTrigger(hour=9, minute=0, second=0))
     # Job 2: Deploy Vehicle Hunter automated background pipeline every 4 hours
-    scheduler.add_job(run_vehicle_hunter, IntervalTrigger(hours=4))
+    scheduler.add_job(run_vehicle_hunter, IntervalTrigger(minutes=30), next_run_time=datetime.now())
 
     scheduler.start()
     print("INFO: All background daemons fully initialized.")

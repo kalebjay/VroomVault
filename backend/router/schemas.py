@@ -151,6 +151,8 @@ class SearchPreferenceBase(BaseModel):
     model: str
     max_price: float
     max_miles: int
+    target_zip: Optional[str] = "22901"
+    max_distance_miles: Optional[int] = 200
     min_year: Optional[int] = None
     required_roof_height: Optional[str] = None       # "Low", "Medium", "High"
     required_wheelbase_inches: Optional[float] = None

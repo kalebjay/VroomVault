@@ -39,7 +39,13 @@ async def run_vehicle_hunter():
             for hunt in active_hunts:
                 logger.info(f"Scanning listings for: {hunt.make} {hunt.model} (Max: ${hunt.max_price})")
                 
-                raw_listings = await fetch_classified_listings(client, hunt.make, hunt.model)
+                raw_listings = await fetch_classified_listings(
+                    client, 
+                    hunt.make, 
+                    hunt.model, 
+                    target_zip=hunt.target_zip, 
+                    max_dist=hunt.max_distance_miles
+                )
                 logger.info(f"📊 Processing pipeline evaluated {len(raw_listings)} prospective items for {hunt.make.upper()}.")
                 
                 for listing in raw_listings:
@@ -60,7 +66,7 @@ async def run_vehicle_hunter():
                         continue
                     
                     # Valuation simulation
-                    market_avg = listing['price'] + 3500.00  
+                    market_avg = listing['price'] + 1000.00  
                     discount = market_avg - listing['price']
                     
                     new_deal = models.GoldenDeal(
@@ -90,13 +96,14 @@ async def run_vehicle_hunter():
     finally:
         db.close()
 
-async def fetch_classified_listings(client: httpx.AsyncClient, make: str, model: str) -> list:
-    """
-    Connects to a public target, downloads the raw markup, 
-    and parses individual listing components cleanly.
-    """
+async def fetch_classified_listings(client: httpx.AsyncClient, make: str, model: str, target_zip: str = "22901", max_dist: int = 200) -> list:
     listings = []
-    url = f"https://bakersfield.craigslist.org/search/cta?query={make}+{model}"
+    
+    # Shift the base domain to your primary target region (e.g., Washington DC area / Northern VA)
+    base_region = "richmond" 
+    
+    # Inject search_distance (miles) and postal (ZIP) directly into Craigslist's query string
+    url = f"https://{base_region}.craigslist.org/search/cta?query={make}+{model}&search_distance={max_dist}&postal={target_zip}"
     
     try:
         response = await client.get(url)
@@ -149,7 +156,7 @@ async def fetch_classified_listings(client: httpx.AsyncClient, make: str, model:
             "price": 14500.0,
             "miles": 82000,
             "year": 2018,
-            "url": "https://bakersfield.craigslist.org/cto/d/mock-ford-transit-deal/123456789.html"
+            "url": "https://richmond.craigslist.org/cto/d/mock-ford-transit-deal/123456789.html"
         })
         
     return listings

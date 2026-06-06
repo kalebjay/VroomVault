@@ -95,6 +95,8 @@ class SearchPreference(Base):
     max_price = Column(Float, nullable=False)
     max_miles = Column(Integer, nullable=False)
     min_year = Column(Integer, nullable=True)
+    target_zip = Column(String, nullable=True, default="22901") # Default to a Central VA zip
+    max_distance_miles = Column(Integer, nullable=True, default=200)
     
     # Strict Utility Specifications
     required_roof_height = Column(String, nullable=True)       # "Low", "Medium", "High", or Null for any
@@ -107,7 +109,6 @@ class SearchPreference(Base):
 
     # Relationships
     matched_deals = relationship("GoldenDeal", back_populates="search_preference", cascade="all, delete-orphan")
-
 
 class GoldenDeal(Base):
     __tablename__ = "golden_deals"

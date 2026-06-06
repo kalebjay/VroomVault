@@ -288,3 +288,62 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+/* ==========================================================================
+   Centered Navigation Toolbar Styles
+   ========================================================================== */
+
+.navToolbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+.navButton {
+  background-color: #34495e;
+  color: #ecf0f1;
+  border: 1px solid #4f5d73;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.navButton:hover {
+  background-color: #4f5d73;
+  border-color: #7f8c8d;
+}
+
+.navButton:active {
+  transform: scale(0.98);
+}
+
+/* Accent state for the primary active action */
+.navButtonAccent {
+  background-color: #2ecc71;
+  color: #fff;
+  border-color: #27ae60;
+}
+
+.navButtonAccent:hover {
+  background-color: #27ae60;
+  border-color: #219653;
+}
+
+.dealBadge {
+  background-color: #34495e;
+  color: #ecf0f1;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #4f5d73;
+}

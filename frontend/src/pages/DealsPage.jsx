@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FaExternalLinkAlt, FaTags, FaFire } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import styles from './Pages.module.css';
 
 const DealsPage = () => {
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchDeals = async () => {
     try {
@@ -22,20 +24,38 @@ const DealsPage = () => {
 
   useEffect(() => {
     fetchDeals();
-    // Poll for new automated scraper hits every 30 seconds while sitting on this page
     const interval = setInterval(fetchDeals, 30000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className={styles.pageContainer}>
+      
+      {/* 🧭 NAVIGATION TOOLBAR */}
+      <div className={styles.navToolbar}>
+        <button 
+          onClick={() => navigate('/')} 
+          className={styles.navButton}
+        >
+          🏠 Dashboard Home
+        </button>
+        <button 
+          onClick={() => navigate('/hunting')} 
+          className={`${styles.navButton} ${styles.navButtonAccent}`}
+        >
+          🎯 Back to Hunter
+        </button>
+      </div>
+
       <div style={{ maxWidth: '1100px', width: '100%', margin: '0 auto', padding: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        
+        {/* FIXED: The button is now inside the flex header container properly */}
+        <div style={{ display: 'flex', gap: '15px', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <div>
             <h1 style={{ margin: 0, color: '#ecf0f1' }}>🔥 Intercepted Golden Deals</h1>
-            <p style={{ color: '#bdc3c7', margin: '5px 0 0 0' }}>Vehicles identified below market value matching your exact physical utility specs.</p>
+            <p style={{ color: '#bdc3c7', margin: '5px 0 0 0' }}>Automated scraping nodes capturing deep market discounts.</p>
           </div>
-          <button onClick={fetchDeals} className={styles.ctaButton} style={{ padding: '8px 16px', fontSize: '0.9rem' }}>
+          <button onClick={fetchDeals} className={styles.navButton} style={{ padding: '8px 16px', fontSize: '0.9rem' }}>
             🔄 Refresh Feed
           </button>
         </div>
@@ -78,11 +98,11 @@ const DealsPage = () => {
 
                     {/* Physical Attributes Extracted via VIN decoder */}
                     <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '15px' }}>
-                      <span style={badgeStyle}>📍 {deal.miles.toLocaleString()} mi</span>
-                      {deal.roof_height && deal.roof_height !== 'Unknown' && <span style={badgeStyle}>🚐 {deal.roof_height} Roof</span>}
-                      {deal.wheelbase_inches && <span style={badgeStyle}>📐 {deal.wheelbase_inches}" WB</span>}
-                      {deal.passenger_capacity && <span style={badgeStyle}>👥 {deal.passenger_capacity} Pax</span>}
-                      {deal.bed_length_inches && <span style={badgeStyle}>🛻 {deal.bed_length_inches}" Box</span>}
+                      <span className={styles.dealBadge}>📍 {deal.miles.toLocaleString()} mi</span>
+                      {deal.roof_height && deal.roof_height !== 'Unknown' && <span className={styles.dealBadge}>🚐 {deal.roof_height} Roof</span>}
+                      {deal.wheelbase_inches && <span className={styles.dealBadge}>📐 {deal.wheelbase_inches}" WB</span>}
+                      {deal.passenger_capacity && <span className={styles.dealBadge}>👥 {deal.passenger_capacity} Pax</span>}
+                      {deal.bed_length_inches && <span className={styles.dealBadge}>🛻 {deal.bed_length_inches}" Box</span>}
                     </div>
                   </div>
 
@@ -98,15 +118,6 @@ const DealsPage = () => {
       </div>
     </div>
   );
-};
-
-const badgeStyle = {
-  backgroundColor: '#34495e',
-  color: '#ecf0f1',
-  fontSize: '0.75rem',
-  padding: '4px 8px',
-  borderRadius: '4px',
-  border: '1px solid #4f5d73'
 };
 
 export default DealsPage;

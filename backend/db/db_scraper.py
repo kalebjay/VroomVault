@@ -16,6 +16,8 @@ def create_search_preference(db: Session, request: schemas.SearchPreferenceCreat
         required_wheelbase_inches=request.required_wheelbase_inches,
         required_bed_length_inches=request.required_bed_length_inches,
         required_passenger_capacity=request.required_passenger_capacity,
+        target_zip=request.target_zip,
+        max_distance_miles=request.max_distance_miles,
         is_active=request.is_active
     )
     db.add(db_pref)
